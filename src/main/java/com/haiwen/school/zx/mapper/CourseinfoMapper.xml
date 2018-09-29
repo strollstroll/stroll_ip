@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.haiwen.school.zx.mapper.CourseinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.haiwen.school.zx.beans.Courseinfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="courseid" property="courseid" jdbcType="INTEGER" />
+    <result column="teacherid" property="teacherid" jdbcType="INTEGER" />
+    <result column="stuid" property="stuid" jdbcType="INTEGER" />
+    <result column="credit" property="credit" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, courseid, teacherid, stuid, credit
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from courseinfo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from courseinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.haiwen.school.zx.beans.Courseinfo" >
+    insert into courseinfo (id, courseid, teacherid, 
+      stuid, credit)
+    values (#{id,jdbcType=INTEGER}, #{courseid,jdbcType=INTEGER}, #{teacherid,jdbcType=INTEGER}, 
+      #{stuid,jdbcType=INTEGER}, #{credit,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.haiwen.school.zx.beans.Courseinfo" >
+    insert into courseinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="courseid != null" >
+        courseid,
+      </if>
+      <if test="teacherid != null" >
+        teacherid,
+      </if>
+      <if test="stuid != null" >
+        stuid,
+      </if>
+      <if test="credit != null" >
+        credit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null" >
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="stuid != null" >
+        #{stuid,jdbcType=INTEGER},
+      </if>
+      <if test="credit != null" >
+        #{credit,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.haiwen.school.zx.beans.Courseinfo" >
+    update courseinfo
+    <set >
+      <if test="courseid != null" >
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="teacherid != null" >
+        teacherid = #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="stuid != null" >
+        stuid = #{stuid,jdbcType=INTEGER},
+      </if>
+      <if test="credit != null" >
+        credit = #{credit,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.haiwen.school.zx.beans.Courseinfo" >
+    update courseinfo
+    set courseid = #{courseid,jdbcType=INTEGER},
+      teacherid = #{teacherid,jdbcType=INTEGER},
+      stuid = #{stuid,jdbcType=INTEGER},
+      credit = #{credit,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getEnterSum" parameterType="Courseinfo" resultType="int">
+  select count(*) from courseinfo i , course c
+  <where>
+    <if test="1==1">
+      and i.courseid=c.id
+    </if>
+    <if test="stuid!=null and stuid!=''">
+      and stuid = #{stuid,jdbcType=INTEGER}
+    </if>
+    <if test="courseid!=null and courseid!=''">
+      and courseid = #{courseid,jdbcType=INTEGER}
+    </if>
+    <if test="1==1">
+      and c.statusid in('1','5')
+    </if>
+  </where>
+</select>
+
+  <select id="getMyStudent" parameterType="Course" resultMap="studentMap">
+    select * from courseinfo i , course c
+    <where>
+      <if test="1==1">
+        and i.courseid=c.id
+      </if>
+      <if test="teacherid!=null and teacherid!=''">
+        and c.teacherid = #{teacherid,jdbcType=INTEGER}
+      </if>
+      <if test="id!=null and id!=''">
+        and c.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="1==1">
+        and c.statusid =2
+      </if>
+    </where>
+  </select>
+  <resultMap id="studentMap" type="Courseinfo">
+    <id column="id" property="id"/>
+    <association property="stuname" column="stuid" select="getStu" />
+  </resultMap>
+  <select id="getStu" parameterType="int" resultType="java.lang.String">
+      select stuName from student where id=#{id,jdbcType=INTEGER}
+  </select>
+</mapper>

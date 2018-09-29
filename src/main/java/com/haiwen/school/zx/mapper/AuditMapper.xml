@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.haiwen.school.zx.mapper.AuditMapper" >
+  <resultMap id="BaseResultMap" type="com.haiwen.school.zx.beans.Audit" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="remake" property="remake" jdbcType="VARCHAR" />
+    <result column="senderName" property="sendername" jdbcType="VARCHAR" />
+    <result column="errorRemake" property="errorremake" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="audittype" property="audittype" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, remake, senderName, errorRemake, status, audittype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from audit
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from audit
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.haiwen.school.zx.beans.Audit" >
+    insert into audit (id, remake, senderName, 
+      errorRemake, status, audittype
+      )
+    values (#{id,jdbcType=INTEGER}, #{remake,jdbcType=VARCHAR}, #{sendername,jdbcType=VARCHAR}, 
+      #{errorremake,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{audittype,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.haiwen.school.zx.beans.Audit" useGeneratedKeys="true" keyProperty="id" >
+    insert into audit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="remake != null" >
+        remake,
+      </if>
+      <if test="sendername != null" >
+        senderName,
+      </if>
+      <if test="errorremake != null" >
+        errorRemake,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="audittype != null" >
+        audittype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="remake != null" >
+        #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="sendername != null" >
+        #{sendername,jdbcType=VARCHAR},
+      </if>
+      <if test="errorremake != null" >
+        #{errorremake,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="audittype != null" >
+        #{audittype,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.haiwen.school.zx.beans.Audit" >
+    update audit
+    <set >
+      <if test="remake != null" >
+        remake = #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="sendername != null" >
+        senderName = #{sendername,jdbcType=VARCHAR},
+      </if>
+      <if test="errorremake != null" >
+        errorRemake = #{errorremake,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="audittype != null" >
+        audittype = #{audittype,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.haiwen.school.zx.beans.Audit" >
+    update audit
+    set remake = #{remake,jdbcType=VARCHAR},
+      senderName = #{sendername,jdbcType=VARCHAR},
+      errorRemake = #{errorremake,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      audittype = #{audittype,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--获取全部-->
+  <resultMap id="AuditMap" type="com.haiwen.school.zx.beans.Audit">
+    <id property="id" column="id"/>
+    <result property="status" column="status"></result>
+    <result property="audittype" column="audittype"></result>
+    <association property="typeName" column="audittype" select="getType"/>
+    <association property="statusName" column="status" select="getStatus"/>
+  </resultMap>
+
+  <select id="getStatus" parameterType="int" resultType="java.lang.String">
+      select auditStatus from auditstatus where id=#{id,jdbcType=INTEGER}
+  </select>
+  <select id="getType" parameterType="int" resultType="java.lang.String">
+      select audittype from audittype where id=#{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getAll" resultMap="AuditMap" parameterType="java.util.Map">
+    select * from audit
+    <where>
+      <if test="sendername!=null and sendername!=''">
+        and sendername like concat('%',concat(#{sendername,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="status!=null and status!=''">
+        and status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="audittype!=null and audittype!=''">
+        and audittype = #{audittype,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+  <!--查询结束-->
+  <select id="checkA" parameterType="Audit" resultType="Audit">
+    select * from audit
+      <where>
+        <if test="status!=null and status!=''">
+          and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="audittype!=null and audittype!=''">
+          and audittype = #{audittype,jdbcType=INTEGER}
+        </if>
+        <if test="sendername != null and sendername!=''" >
+          and senderName = #{sendername,jdbcType=VARCHAR}
+        </if>
+      </where>
+  </select>
+</mapper>

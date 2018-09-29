@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.haiwen.school.zx.mapper.StatusMapper" >
+  <resultMap id="BaseResultMap" type="com.haiwen.school.zx.beans.Status" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="statusName" property="statusname" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, statusName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from status
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from status
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.haiwen.school.zx.beans.Status" >
+    insert into status (id, statusName)
+    values (#{id,jdbcType=INTEGER}, #{statusname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.haiwen.school.zx.beans.Status" >
+    insert into status
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="statusname != null" >
+        statusName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="statusname != null" >
+        #{statusname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.haiwen.school.zx.beans.Status" >
+    update status
+    <set >
+      <if test="statusname != null" >
+        statusName = #{statusname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.haiwen.school.zx.beans.Status" >
+    update status
+    set statusName = #{statusname,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getAll" resultType="Status">
+    select * from status;
+  </select>
+</mapper>
