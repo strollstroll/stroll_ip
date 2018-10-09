@@ -3,10 +3,9 @@ package com.haiwen.school.zx.beans;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class Ipform {
-    private String ipAddress;
+public class UnconfirmIp {
+	private String ipAddress;
 
     private Integer ipNumber;
 

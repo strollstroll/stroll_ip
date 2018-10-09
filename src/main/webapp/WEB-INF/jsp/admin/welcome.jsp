@@ -33,7 +33,7 @@
     <blockquote class="layui-elem-quote">欢迎${userInfo.power}：
         <span class="x-red">${userInfo.nickname}</span>
         <c:if test="${userInfo.powerid==3||userInfo.powerid==5}">
-            <a style="float: right" onclick="x_admin_show('申请教师','<%=basePath%>/teacher/toEdit.do','500','500')">如需申请教师，请点此处</a>
+            <a style="float: right" onclick="x_admin_show('申请IP地址审核员','<%=basePath%>/teacher/toEdit.do','500','500')">如需申请IP地址审核员，请点此处</a>
         </c:if>
     </blockquote>
     <div style="height: 250px"></div>

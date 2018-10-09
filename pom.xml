@@ -119,6 +119,13 @@
     <version>2.9.2</version>
 	</dependency>
     
+     <!-- poi (导出) -->
+     <dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi-ooxml</artifactId>
+		<version>3.10-FINAL</version>
+	</dependency>
+    
   </dependencies>
 	
 

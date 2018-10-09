@@ -22,9 +22,9 @@ public class IndexController {
         else {
             int powerid = logininfo.getPowerid();
             if (powerid==1)return "admin/admin-index";
-            if (powerid==2)return "admin/teacher-index";
+            if (powerid==2)return "admin/auditor-index";
         }
-        return "admin/student-index";
+        return "admin/employee-index";
     }
 
     @RequestMapping("/welcome")
