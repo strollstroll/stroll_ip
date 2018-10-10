@@ -25,7 +25,7 @@
 <body>
 <!-- 顶部开始 -->
 <div class="container">
-    <div class="logo"><a href="#">IP地址管理员</a></div>
+    <div class="logo"><a href="#">IP地址管理</a></div>
     <div class="left_open">
         <i title="展开左侧栏" class="iconfont">&#xe699;</i>
     </div>
@@ -54,15 +54,15 @@
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="<%=basePath%>/employee/toIpformList.do">   
+                        <a _href="<%=basePath%>/employeeIp/toEmployeeIpList.do">   
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>IP地址列表</cite>
                         </a>
                     </li >
                     <li>
-                        <a _href="<%=basePath%>/employee/toUnconfirmIpList.do">
+                        <a _href="<%=basePath%>/unconfirmIp/toUnconfirmIpList.do">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP修改待审核</cite>
+                            <cite>IP信息待审核</cite>
                         </a>
                     </li >
 
@@ -101,7 +101,7 @@
         var layer=layui.layer;
         if("${msg}"!=""){
             layer.msg('${msg}',{icon:2,time:1500},function () {
-                location.href="/school/"
+                location.href="/ssm/"
             })   }
     })
 </script>

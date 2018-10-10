@@ -17,9 +17,15 @@ public interface IpService {
 	//根据id（也就是ipNumber）获取一条IP地址信息
 	Ipform getIpformById(Integer id);
 	
+	Ipform getIpformByIpAddress(String address);
+	
 	//根据id修改IP地址信息
 	void updateIpById(Ipform ipform);
 	
+	void updateIpByIpAddressSelective(Ipform ipform);
+	
 	//根据id删除IP地址信息
 	void deleteIpById(Integer id);
+	
+	void deleteIpByIpAddress(String address);
 }

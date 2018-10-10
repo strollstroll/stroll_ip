@@ -12,7 +12,7 @@
   
   <head>
     <meta charset="UTF-8">
-    <title>IP地址信息编辑</title>
+    <title>查看IP地址</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -196,13 +196,13 @@
         form.on('submit(update)', function(data){
             console.log(data);
             $.ajax({
-                url:'<%=basePath%>/employeeIp/doUpdateAddUnconfirmIp.do',
+                url:'<%=basePath%>/ip/doUpdate.do',
                 data:data.field,
                 method:'post',
                 success:function (data) {
                    // res=JSON.parse(res);
                     if(data==0){
-                        layer.alert("修改成功,待审核！", {icon:6},function () {
+                        layer.alert("修改成功", {icon:6},function () {
                             // 获得frame索引
                             var index = parent.layer.getFrameIndex(window.name);
                             //关闭当前frame

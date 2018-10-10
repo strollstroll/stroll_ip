@@ -12,7 +12,7 @@
   
   <head>
     <meta charset="UTF-8">
-    <title>IP地址信息编辑</title>
+    <title>查看IP地址</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -30,15 +30,8 @@
     <![endif]-->
   </head>
 
-<body>
-  <div class="x-body">
-  <form class="layui-form">
-  <div class="layui-form-item">
-    <label class="layui-form-label">序号</label>
-    <div class="layui-input-block">
-      <input type="text" name="ipNumber" lay-verify="ipWatch" value="${ip.ipNumber}" value="${ip.ipStatus}" autocomplete="off" placeholder="请输入序号" class="layui-input">
-    </div>
-  	</div>
+   <body>
+    <div class="x-body">
  	<div class="layui-form-item">
     <label class="layui-form-label">状态</label>
     <div class="layui-input-block">
@@ -166,62 +159,12 @@
       <input type="text" name="ipInputrate" lay-verify="ipWatch" value="${ip.ipInputrate}" autocomplete="off" placeholder="请输入下行速率" class="layui-input">
     </div>
   </div>
-  <div class="layui-form-item">
+<div class="layui-form-item">
     <label class="layui-form-label">对应终端数</label>
     <div class="layui-input-block">
       <input type="text" name="ipTerminalnumber" lay-verify="ipWatch" value="${ip.ipTerminalnumber}" autocomplete="off" placeholder="请输入对应终端数" class="layui-input">
     </div>
   </div>
-   <div class="layui-form-item">
-    <div class="layui-input-block">
-      <button class="layui-btn" lay-submit="" lay-filter="update">修改</button>
-      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
     </div>
-  </div>
-  </form>
-</div>
 
 </body>
-
-<script>
-    layui.use(['form','layer','laydate'], function(){
-        $ = layui.jquery;
-        var form = layui.form
-            ,layer = layui.layer
-            ,laydate = layui.laydate;
-        laydate.render({
-            elem: '#date1'
-          });
-                  //监听提交
-        form.on('submit(update)', function(data){
-            console.log(data);
-            $.ajax({
-                url:'<%=basePath%>/employeeIp/doUpdateAddUnconfirmIp.do',
-                data:data.field,
-                method:'post',
-                success:function (data) {
-                   // res=JSON.parse(res);
-                    if(data==0){
-                        layer.alert("修改成功,待审核！", {icon:6},function () {
-                            // 获得frame索引
-                            var index = parent.layer.getFrameIndex(window.name);
-                            //关闭当前frame
-                            parent.layer.close(index);
-                        });
-                    }else{
-                        layer.alert('修改失败！',{icon:5})
-                    }
-                },
-                error:function (err) {
-                    layer.alert('与服务器链接失败，请稍后再试');
-                    console.log(err);
-                }
-            });
-            return false;
-        });
-
-
-
-    });
-</script>
-</html>

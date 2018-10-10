@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.haiwen.school.zx.beans.Ipform;
+import com.haiwen.school.zx.beans.UnconfirmIp;
 import com.haiwen.school.zx.service.IpService;
+import com.haiwen.school.zx.service.UnconfirmIpService;
 import com.haiwen.school.zx.service.UserService;
 
 @Controller
@@ -23,7 +25,8 @@ import com.haiwen.school.zx.service.UserService;
 public class EmployeeIpController {
 	@Autowired
 	private IpService ipService;
-	
+	@Autowired
+	private UnconfirmIpService unconfirmIpService;
 	@Autowired
     private UserService userService;
 	
@@ -35,49 +38,32 @@ public class EmployeeIpController {
 	        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 	    }
 	
-	@RequestMapping("/toIpformList")
+	@RequestMapping("/toEmployeeIpList")
 	public String toList1(HttpServletRequest request){
 	    request.setAttribute("power",userService.getPower());
-	      return "ip/ip-list";
+	      return "employee/ip-list";
 	}
 	
-	//测试******************************************
-	@RequestMapping("/toIpformList1")
-	public String toList2(HttpServletRequest request){
+	@RequestMapping("/toUnconfirmIpEdit")
+	public String employeeIpEdit(HttpServletRequest request){
 	    request.setAttribute("power",userService.getPower());
-	      return "ip/user1-list";
-	}
-	//测试结束******************************************
-	@RequestMapping("/toIpformEdit")
-	public String ipformEdit(HttpServletRequest request){
-	    request.setAttribute("power",userService.getPower());
-	      return "ip/ip-edit";
-	}
-	//获取IP信息列表
-	@RequestMapping("/getIpformList")
-	@ResponseBody
-	public Map<String, Object> toIpInform(int page, int limit, Ipform ipform) {
-		
-		/*//获取所有IP信息数据
-		request.setAttribute("ipform",ipService.getAllIpform());
-		//return "ip/ipInformList";
-		return "ip/user1-list";*/
-		return ipService.getAll(page,limit,ipform);
+	      return "employee/ip-edit";
 	}
 	
 	//跳转到添加IP页面
-	@RequestMapping("/addIp")
+	@RequestMapping("/addUnconfirmIp")
 	public String addIp(HttpServletRequest request){
 	    request.setAttribute("power",userService.getPower());
-	      return "ip/ip-add";
+	      return "employee/ip-add";
 	}
 	//添加IP地址信息
 	@RequestMapping("/doAdd")
 	@ResponseBody
-	public Integer addIpform(Ipform ipform) {
+	public Integer addIpform(UnconfirmIp unconfirmIp) {
+		unconfirmIp.setUnconfirmStatus("添加待审核");
 		Integer result=0;
         try{
-            ipService.addIp(ipform);
+            unconfirmIpService.addUnconfirmIp(unconfirmIp);
         }catch(Exception e){
             result = -1;
         }
@@ -99,16 +85,47 @@ public class EmployeeIpController {
 	public String toEdit(Integer id,HttpServletRequest request) {
 		Ipform ipform=ipService.getIpformById(id);
 		request.setAttribute("ip",ipform);
-		return "ip/ip-edit";
+		return "employee/ip-edit";
 	}
 	
-	//修改ip地址信息
-	@RequestMapping("/doUpdate")
+	//将修改ip地址信息添加到待审核表中的，员ip表的中内容不变，审核完之后才发生变化
+	@RequestMapping("/doUpdateAddUnconfirmIp")
 	@ResponseBody
-	public Integer updateIp(Ipform ipform) {
+	public Integer UpdateIpAddUnconfirmIp(Ipform ipform) {
+		
+		//将更改的ip信息插入到待审核表中
+		UnconfirmIp unconfirmIp=new UnconfirmIp();
+		unconfirmIp.setIpAddress(ipform.getIpAddress());
+		unconfirmIp.setIpStatus(ipform.getIpStatus());
+		unconfirmIp.setIpRemarks(ipform.getIpRemarks());
+		unconfirmIp.setIpSubnetmask(ipform.getIpSubnetmask());
+		unconfirmIp.setIpAddressnumber(ipform.getIpAddressnumber());
+		unconfirmIp.setIpUsetime(ipform.getIpUsetime());
+		unconfirmIp.setIpUsername(ipform.getIpUsername());
+		unconfirmIp.setIpVlan(ipform.getIpVlan());
+		unconfirmIp.setIpConnectingdevice(ipform.getIpConnectingdevice());
+		unconfirmIp.setIpPort(ipform.getIpPort());
+		unconfirmIp.setIpRate(ipform.getIpRate());
+		unconfirmIp.setIpAttribution(ipform.getIpAttribution());
+		unconfirmIp.setIpBroadbandacceptancenumber(ipform.getIpBroadbandacceptancenumber());
+		unconfirmIp.setIpSnnumber(ipform.getIpSnnumber());
+		unconfirmIp.setIpOltaddress(ipform.getIpOltaddress());
+		unconfirmIp.setIpIomusername(ipform.getIpIomusername());
+		unconfirmIp.setIpInstalledaddress(ipform.getIpInstalledaddress());
+		unconfirmIp.setIpType(ipform.getIpType());
+		unconfirmIp.setIpWotvbssremarks(ipform.getIpWotvbssremarks());
+		unconfirmIp.setIpOutputrate(ipform.getIpOutputrate());
+		unconfirmIp.setIpInputrate(ipform.getIpInputrate());
+		unconfirmIp.setIpTerminalnumber(ipform.getIpTerminalnumber());
+		//审核状态说明
+		unconfirmIp.setUnconfirmStatus("修改待审核");
+		
 		Integer result=0;
 		
 		try {
+			unconfirmIpService.addUnconfirmIp(unconfirmIp);
+			//在ipform表中将该ip的审核状态变为1（审核中）表示修改待审核
+			ipform.setApprovalStatus(1);
 			ipService.updateIpById(ipform);
 		}catch(Exception e){
 			result=-1;
@@ -119,10 +136,41 @@ public class EmployeeIpController {
 	//删除IP地址信息
 	@RequestMapping("/toDelete")
 	@ResponseBody
-	public Map<String, Object> deleteIp(int page,int limit,Integer id,Ipform ipform) {
-		ipService.deleteIpById(id);
+	public Map<String, Object> deleteIp(int page,int limit,Integer id,Ipform ip) {
+		Ipform ipform=ipService.getIpformById(id);
+		//将更改的ip信息插入到待审核表中
+				UnconfirmIp unconfirmIp=new UnconfirmIp();
+				unconfirmIp.setIpAddress(ipform.getIpAddress());
+				unconfirmIp.setIpStatus(ipform.getIpStatus());
+				unconfirmIp.setIpRemarks(ipform.getIpRemarks());
+				unconfirmIp.setIpSubnetmask(ipform.getIpSubnetmask());
+				unconfirmIp.setIpAddressnumber(ipform.getIpAddressnumber());
+				unconfirmIp.setIpUsetime(ipform.getIpUsetime());
+				unconfirmIp.setIpUsername(ipform.getIpUsername());
+				unconfirmIp.setIpVlan(ipform.getIpVlan());
+				unconfirmIp.setIpConnectingdevice(ipform.getIpConnectingdevice());
+				unconfirmIp.setIpPort(ipform.getIpPort());
+				unconfirmIp.setIpRate(ipform.getIpRate());
+				unconfirmIp.setIpAttribution(ipform.getIpAttribution());
+				unconfirmIp.setIpBroadbandacceptancenumber(ipform.getIpBroadbandacceptancenumber());
+				unconfirmIp.setIpSnnumber(ipform.getIpSnnumber());
+				unconfirmIp.setIpOltaddress(ipform.getIpOltaddress());
+				unconfirmIp.setIpIomusername(ipform.getIpIomusername());
+				unconfirmIp.setIpInstalledaddress(ipform.getIpInstalledaddress());
+				unconfirmIp.setIpType(ipform.getIpType());
+				unconfirmIp.setIpWotvbssremarks(ipform.getIpWotvbssremarks());
+				unconfirmIp.setIpOutputrate(ipform.getIpOutputrate());
+				unconfirmIp.setIpInputrate(ipform.getIpInputrate());
+				unconfirmIp.setIpTerminalnumber(ipform.getIpTerminalnumber());
+				//审核状态说明
+				unconfirmIp.setUnconfirmStatus("删除待审核");	
+				//在ipform表中将该ip的审核状态变为2（审核中）表示删除待审核
+				ipform.setApprovalStatus(2);
+				ipService.updateIpById(ipform);
+		unconfirmIpService.addUnconfirmIp(unconfirmIp);
+
 		//return "ip/ip-list";
-		return ipService.getAll(page,limit,ipform);
+		return ipService.getAll(page,limit,ip);
 	}
 	
 }

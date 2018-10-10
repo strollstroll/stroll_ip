@@ -25,12 +25,13 @@
     <result column="ip_outputrate" property="ipOutputrate" jdbcType="INTEGER" />
     <result column="ip_inputrate" property="ipInputrate" jdbcType="INTEGER" />
     <result column="ip_terminalnumber" property="ipTerminalnumber" jdbcType="INTEGER" />
+    <result column="approval_status" property="approvalStatus" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     ip_number, ip_address, ip_status, ip_remarks, ip_subnetmask, ip_addressnumber, ip_usetime, 
     ip_username, ip_vlan, ip_connectingdevice, ip_port, ip_rate, ip_attribution, ip_broadbandacceptancenumber, 
     ip_SNnumber, ip_OLTaddress, ip_IOMusername, ip_installedaddress, ip_type, ip_WOTVBSSremarks, 
-    ip_outputrate, ip_inputrate, ip_terminalnumber
+    ip_outputrate, ip_inputrate, ip_terminalnumber,approval_status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -38,9 +39,19 @@
     from ipform
     where ip_number = #{ipNumber,jdbcType=INTEGER}
   </select>
+    <select id="selectByIpAddress" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ipform
+    where ip_address = #{ipAddress,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ipform
     where ip_number = #{ipNumber,jdbcType=INTEGER}
+  </delete>
+   <delete id="deleteByIpAddress" parameterType="java.lang.String" >
+    delete from ipform
+    where ip_address = #{ipAdress,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.haiwen.school.zx.beans.Ipform" >
     insert into ipform (ip_number,ip_address,  ip_status, 
@@ -50,7 +61,7 @@
       ip_attribution, ip_broadbandacceptancenumber, 
       ip_SNnumber, ip_OLTaddress, ip_IOMusername, 
       ip_installedaddress, ip_type, ip_WOTVBSSremarks, 
-      ip_outputrate, ip_inputrate, ip_terminalnumber
+      ip_outputrate, ip_inputrate, ip_terminalnumber,approval_status
       )
     values (#{ipNumber,jdbcType=INTEGER}, #{ipAddress,jdbcType=VARCHAR}, #{ipStatus,jdbcType=VARCHAR}, 
       #{ipRemarks,jdbcType=VARCHAR}, #{ipSubnetmask,jdbcType=VARCHAR}, #{ipAddressnumber,jdbcType=INTEGER}, 
@@ -59,7 +70,7 @@
       #{ipAttribution,jdbcType=VARCHAR}, #{ipBroadbandacceptancenumber,jdbcType=VARCHAR}, 
       #{ipSnnumber,jdbcType=INTEGER}, #{ipOltaddress,jdbcType=VARCHAR}, #{ipIomusername,jdbcType=VARCHAR}, 
       #{ipInstalledaddress,jdbcType=VARCHAR}, #{ipType,jdbcType=VARCHAR}, #{ipWotvbssremarks,jdbcType=VARCHAR}, 
-      #{ipOutputrate,jdbcType=INTEGER}, #{ipInputrate,jdbcType=INTEGER}, #{ipTerminalnumber,jdbcType=INTEGER}
+      #{ipOutputrate,jdbcType=INTEGER}, #{ipInputrate,jdbcType=INTEGER}, #{ipTerminalnumber,jdbcType=INTEGER}, #{approvalStatus,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.haiwen.school.zx.beans.Ipform" >
@@ -134,6 +145,9 @@
       <if test="ipTerminalnumber != null" >
         ip_terminalnumber,
       </if>
+      <if test="approvalStatus != null" >
+        approval_status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="ipNumber != null" >
@@ -204,6 +218,9 @@
       </if>
       <if test="ipTerminalnumber != null" >
         #{ipTerminalnumber,jdbcType=INTEGER},
+      </if>
+      <if test="approvalStatus != null" >
+        #{approvalStatus,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -276,8 +293,86 @@
       <if test="ipTerminalnumber != null" >
         ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER},
       </if>
+      <if test="approvalStatus != null" >
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
     </set>
     where ip_number = #{ipNumber,jdbcType=INTEGER}
+  </update>
+    <update id="updateByIpAddressSelective" parameterType="com.haiwen.school.zx.beans.Ipform" >
+    update ipform
+    <set >
+      <if test="ipAddress != null" >
+        ip_address = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ipStatus != null" >
+        ip_status = #{ipStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ipRemarks != null" >
+        ip_remarks = #{ipRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ipSubnetmask != null" >
+        ip_subnetmask = #{ipSubnetmask,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddressnumber != null" >
+        ip_addressnumber = #{ipAddressnumber,jdbcType=INTEGER},
+      </if>
+      <if test="ipUsetime != null" >
+        ip_usetime = #{ipUsetime,jdbcType=DATE},
+      </if>
+      <if test="ipUsername != null" >
+        ip_username = #{ipUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="ipVlan != null" >
+        ip_vlan = #{ipVlan,jdbcType=VARCHAR},
+      </if>
+      <if test="ipConnectingdevice != null" >
+        ip_connectingdevice = #{ipConnectingdevice,jdbcType=VARCHAR},
+      </if>
+      <if test="ipPort != null" >
+        ip_port = #{ipPort,jdbcType=VARCHAR},
+      </if>
+      <if test="ipRate != null" >
+        ip_rate = #{ipRate,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAttribution != null" >
+        ip_attribution = #{ipAttribution,jdbcType=VARCHAR},
+      </if>
+      <if test="ipBroadbandacceptancenumber != null" >
+        ip_broadbandacceptancenumber = #{ipBroadbandacceptancenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="ipSnnumber != null" >
+        ip_SNnumber = #{ipSnnumber,jdbcType=INTEGER},
+      </if>
+      <if test="ipOltaddress != null" >
+        ip_OLTaddress = #{ipOltaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ipIomusername != null" >
+        ip_IOMusername = #{ipIomusername,jdbcType=VARCHAR},
+      </if>
+      <if test="ipInstalledaddress != null" >
+        ip_installedaddress = #{ipInstalledaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ipType != null" >
+        ip_type = #{ipType,jdbcType=VARCHAR},
+      </if>
+      <if test="ipWotvbssremarks != null" >
+        ip_WOTVBSSremarks = #{ipWotvbssremarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ipOutputrate != null" >
+        ip_outputrate = #{ipOutputrate,jdbcType=INTEGER},
+      </if>
+      <if test="ipInputrate != null" >
+        ip_inputrate = #{ipInputrate,jdbcType=INTEGER},
+      </if>
+      <if test="ipTerminalnumber != null" >
+        ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER},
+      </if>
+      <if test="approvalStatus != null" >
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ip_address = #{ipAddress,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.haiwen.school.zx.beans.Ipform" >
     update ipform
@@ -302,7 +397,8 @@
       ip_WOTVBSSremarks = #{ipWotvbssremarks,jdbcType=VARCHAR},
       ip_outputrate = #{ipOutputrate,jdbcType=INTEGER},
       ip_inputrate = #{ipInputrate,jdbcType=INTEGER},
-      ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER}
+      ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER},
+      approval_status = #{approvalStatus,jdbcType=INTEGER}
     where ip_number = #{ipNumber,jdbcType=INTEGER}
   </update>
   <!-- 查询所有数据 -->
@@ -312,7 +408,7 @@
    	 ip_address, ip_number, ip_status, ip_remarks, ip_subnetmask, ip_addressnumber, ip_usetime, 
     ip_username, ip_vlan, ip_connectingdevice, ip_port, ip_rate, ip_attribution, ip_broadbandacceptancenumber, 
     ip_SNnumber, ip_OLTaddress, ip_IOMusername, ip_installedaddress, ip_type, ip_WOTVBSSremarks, 
-    ip_outputrate, ip_inputrate, ip_terminalnumber
+    ip_outputrate, ip_inputrate, ip_terminalnumber,approval_status
    	  from ipform
    	 <where>
       <if test="ipAddress!=null and ipAddress!=''">

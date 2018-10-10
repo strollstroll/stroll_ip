@@ -34,9 +34,9 @@
 <body>
 <div class="x-nav">
       <span class="layui-breadcrumb">
-        <a href="">IP管理</a>
+        <a href="">IP管理员</a>
         <a>
-          <cite>IP列表</cite></a>
+          <cite>待审核IP列表</cite></a>
       </span>
 </div>
 <!--根据IP地址搜索，刷新IP信息列表，添加IP信息  -->
@@ -49,22 +49,20 @@
   	<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
   	<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
-    <button class="layui-btn layui-btn-normal" onclick="openWin('IP地址添加','<%=basePath%>/employeeIp/addUnconfirmIp.do')">添加</button>
 </div>
     <table id="infoTable" lay-filter="userTable" >
+	
     </table>	
+
 </div>
 <script type="text/html" id="ipbar">
-	<!--ip查看直接调用ip下的页面就可以-->
-  	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('IP地址信息查看','<%=basePath%>/ip/toGetIpWatch.do?id={{d.ipNumber}}')">查看</a>
- 
-    {{#  if(d.approvalStatus ==1){ }}
-    <button class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="upd" ><i class="layui-icon">&#xe642;</i>修改待审核</button>
-     {{# } else if(d.approvalStatus ==2 ){ }}
-    <button class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="upd" ><i class="layui-icon">&#xe642;</i>删除待审核</button>
-	{{#  } else { }}
-	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/employeeIp/toEdit.do?id={{d.ipNumber}}')">编辑</a>
-  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.ipNumber}}')">查看</a>
+
+	{{#  if(d.unconfirmStatus =="删除待审核"||d.unconfirmStatus =="审核未通过(删除操作)"){ }}
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消审核</a>
+    {{#  } else { }}
+	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.ipNumber}}')">再次编辑</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消审核</a>
     {{#  } }}
 </script>
 <!-- 序号自增， -->
@@ -78,11 +76,11 @@
         var form=layui.form;
         t=table.render({
             elem:'#infoTable',
-            url:'<%=basePath%>/ip/getIpformList.do',
+            url:'<%=basePath%>/unconfirmIp/getUnconfirmIpList.do',
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
-            	 {field:'ipNumber',width: 86,title:'序号'},
+            	/*  {field:'ipNumber',width: 86,title:'序号'}, */
                  {field:'ipStatus',width: 86,title:'状态'},
                  {field:'ipRemarks',width: 150,title:'备注'},
                  {field:'ipAddress',width: 150,title:'IP地址'},
@@ -105,8 +103,8 @@
                  {field:'ipOutputrate',width: 86,title:'上行速率'},
                  {field:'ipInputrate',width: 86,title:'下行速率'},
                  {field:'ipTerminalnumber',width: 100,title:'对应终端数'},
-                 /* {field:'opt',width: 86,title:'操作',toolbar:'#toolbar'} */ 
-                 {field:'opt',width: 160,title:'操作',toolbar:'#ipbar',fixed: 'right'}
+                 {field:'unconfirmStatus',width: 120,title:'审核状态',fixed: 'right'},
+                 {field:'opt',width: 210,title:'操作',toolbar:'#ipbar',fixed: 'right'}
             ]],
             id:'ipTable'
             ,page:true
@@ -145,17 +143,17 @@
           var data = obj.data //获得当前行数据
           ,layEvent = obj.event; //获得 lay-event 对应的值
           if(layEvent === 'del'){
-            layer.confirm('删除需审核后完成，确认提交审核删除该行信息吗？', function(index){
+            layer.confirm('确定取消删除该条IP信息嘛？', function(index){
             	
             	   //向服务端发送删除指令
                 table.reload('ipTable',{
-              	  url:'<%=basePath%>/employeeIp/toDelete.do'
+              	  url:'<%=basePath%>/unconfirmIp/toDelete.do'
               	  ,where:{
               		  id:data.ipNumber
               	  }
                 });
             	   
-             // obj.del(); //删除对应行（tr）的DOM结构
+              obj.del(); //删除对应行（tr）的DOM结构
               layer.close(index);
            
             });

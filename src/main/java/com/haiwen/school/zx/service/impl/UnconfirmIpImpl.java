@@ -65,7 +65,7 @@ public class UnconfirmIpImpl implements UnconfirmIpService{
   }
   //根据id修改IP地址信息，修改信息录入到待审核处，原ip信息还未修改
   public void updateUnconfirmIpById(UnconfirmIp unconfirmIp) {
-	  unconfirmIpMapper.updateByPrimaryKey(unconfirmIp);
+	  unconfirmIpMapper.updateByPrimaryKeySelective(unconfirmIp);
   }
   //根据id删除IP地址信息，删除的ip地址录入到待审核处，审核完后才会修改
   public void deleteUnconfirmIpById(Integer id) {

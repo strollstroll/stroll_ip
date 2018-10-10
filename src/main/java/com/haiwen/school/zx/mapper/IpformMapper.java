@@ -7,6 +7,8 @@ import com.haiwen.school.zx.beans.Ipform;
 
 public interface IpformMapper {
     int deleteByPrimaryKey(Integer id);
+    
+    int deleteByIpAddress(String record);
 
     int insert(Ipform record);
 
@@ -15,8 +17,12 @@ public interface IpformMapper {
     Ipform selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(Ipform record);
+    
+    int updateByIpAddressSelective(Ipform record);
 
     int updateByPrimaryKey(Ipform record);
+    
+    Ipform selectByIpAddress(String record);
 
     //List<Ipform> getAll();
    // Ipform checkA(Ipform ipform);

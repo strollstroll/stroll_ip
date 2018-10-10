@@ -11,7 +11,7 @@
   
   <head>
       <meta charset="UTF-8">
-      <title>教师页面</title>
+      <title>管理员页面</title>
       <meta name="renderer" content="webkit">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -32,12 +32,6 @@
   <body>
   <div class="x-body">
       <form class="layui-form">
-     <!--  <div class="layui-form-item">
-      <label class="layui-form-label">序号</label>
-      <div class="layui-input-block">
-        <input type="text" name="ipNumber" lay-verify="title" autocomplete="off" placeholder="请输入序号" class="layui-input">
-      </div>
-      </div> -->
   
   <div class="layui-form-item">
       <!-- <label class="layui-form-label">状态</label>
@@ -183,10 +177,11 @@
     </div>
       <div class="layui-form-item">
       <div class="layui-input-block">
-        <button class="layui-btn" lay-submit="" lay-filter="add">添加</button>
+        <button class="layui-btn" lay-submit="" lay-filter="add">提交审核</button>
         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
       </div>
     </div>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;新添加的IP地址，提交审核后到IP信息待审核页面查看</p>
       </form>
   </div>
   
@@ -283,7 +278,7 @@
           form.on('submit(add)', function(data){
               console.log(data);
               $.ajax({
-                  url:'<%=basePath%>/ip/doAdd.do',
+                  url:'<%=basePath%>/employeeIp/doAdd.do',
                   data:data.field,
                   method:'post',
                   success:function (data) {
@@ -296,7 +291,7 @@
                               parent.layer.close(index);
                           });
                       }else{
-                          layer.alert('更新失败！',{icon:5})
+                          layer.alert('添加审核失败！',{icon:5})
                       }
                   },
                   error:function (err) {

@@ -52,6 +52,9 @@ public class Ipform {
     private Integer ipInputrate;
 
     private Integer ipTerminalnumber;
+    
+    //审核状态，0和空都是没有在待审核表里的，1是在审核表里。
+    private Integer approvalStatus;
 
     public String getIpAddress() {
         return ipAddress;
@@ -236,6 +239,14 @@ public class Ipform {
         this.ipTerminalnumber = ipTerminalnumber;
     }
 
+	public Integer getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(Integer approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+	
 	@Override
 	public String toString() {
 		return "Ipform [ipAddress=" + ipAddress + ", ipNumber=" + ipNumber + ", ipStatus=" + ipStatus + ", ipRemarks="
@@ -246,7 +257,7 @@ public class Ipform {
 				+ ", ipOltaddress=" + ipOltaddress + ", ipIomusername=" + ipIomusername + ", ipInstalledaddress="
 				+ ipInstalledaddress + ", ipType=" + ipType + ", ipWotvbssremarks=" + ipWotvbssremarks
 				+ ", ipOutputrate=" + ipOutputrate + ", ipInputrate=" + ipInputrate + ", ipTerminalnumber="
-				+ ipTerminalnumber + "]";
+				+ ipTerminalnumber +  ", approvalStatus=" + approvalStatus + "]";
 	}
-    
+
 }

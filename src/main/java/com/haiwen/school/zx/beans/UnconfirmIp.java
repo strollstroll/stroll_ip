@@ -51,6 +51,8 @@ public class UnconfirmIp {
     private Integer ipInputrate;
 
     private Integer ipTerminalnumber;
+    
+    private String unconfirmStatus;
 
     public String getIpAddress() {
         return ipAddress;
@@ -235,6 +237,15 @@ public class UnconfirmIp {
         this.ipTerminalnumber = ipTerminalnumber;
     }
 
+	public String getUnconfirmStatus() {
+		return unconfirmStatus;
+	}
+
+	public void setUnconfirmStatus(String unconfirmStatus) {
+		this.unconfirmStatus = unconfirmStatus;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Ipform [ipAddress=" + ipAddress + ", ipNumber=" + ipNumber + ", ipStatus=" + ipStatus + ", ipRemarks="
@@ -245,7 +256,9 @@ public class UnconfirmIp {
 				+ ", ipOltaddress=" + ipOltaddress + ", ipIomusername=" + ipIomusername + ", ipInstalledaddress="
 				+ ipInstalledaddress + ", ipType=" + ipType + ", ipWotvbssremarks=" + ipWotvbssremarks
 				+ ", ipOutputrate=" + ipOutputrate + ", ipInputrate=" + ipInputrate + ", ipTerminalnumber="
-				+ ipTerminalnumber + "]";
+				+ ipTerminalnumber + ",unconfirmStatus="+unconfirmStatus+ "]";
 	}
+
+
     
 }

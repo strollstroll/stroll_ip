@@ -50,30 +50,19 @@ public class IpformController {
 	      return "ip/ip-list";
 	}
 	
-	//测试******************************************
-	@RequestMapping("/toIpformList1")
-	public String toList2(HttpServletRequest request){
-	    request.setAttribute("power",userService.getPower());
-	      return "ip/user1-list";
+	//获取IP信息列表
+	@RequestMapping("/getIpformList")
+	@ResponseBody
+	public Map<String, Object> toIpInform(int page, int limit, Ipform ipform) {
+		return ipService.getAll(page,limit,ipform);
 	}
-	//测试结束******************************************
+
 	@RequestMapping("/toIpformEdit")
 	public String ipformEdit(HttpServletRequest request){
 	    request.setAttribute("power",userService.getPower());
 	      return "ip/ip-edit";
 	}
-	//获取IP信息列表
-	@RequestMapping("/getIpformList")
-	@ResponseBody
-	public Map<String, Object> toIpInform(int page, int limit, Ipform ipform) {
-		
-		/*//获取所有IP信息数据
-		request.setAttribute("ipform",ipService.getAllIpform());
-		//return "ip/ipInformList";
-		return "ip/user1-list";*/
-		return ipService.getAll(page,limit,ipform);
-	}
-	
+
 	//跳转到添加IP页面
 	@RequestMapping("/addIp")
 	public String addIp(HttpServletRequest request){

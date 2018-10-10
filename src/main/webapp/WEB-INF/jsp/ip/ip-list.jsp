@@ -70,8 +70,15 @@
 </script>
 <script type="text/html" id="ipbar">
   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('IP地址信息查看','<%=basePath%>/ip/toGetIpWatch.do?id={{d.ipNumber}}')">查看</a>
-  <a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/ip/toEdit.do?id={{d.ipNumber}}')">编辑</a>
-  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    {{#  if(d.approvalStatus ==1){ }}
+    <button class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="upd" ><i class="layui-icon">&#xe642;</i>修改待审核</button>
+     {{# } else if(d.approvalStatus ==2 ){ }}
+    <button class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="upd" ><i class="layui-icon">&#xe642;</i>删除待审核</button>
+	{{#  } else { }}
+	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/ip/toEdit.do?id={{d.ipNumber}}')">编辑</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{#  } }}
 </script>
 <!-- 序号自增， -->
 <script type="text/html" id="zizeng">

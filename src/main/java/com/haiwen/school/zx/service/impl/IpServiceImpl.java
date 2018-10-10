@@ -34,8 +34,6 @@ private IpformMapper ipformMapper;
 
 	        PageHelper.startPage(page, limit);
 	        List<Ipform> ipList=ipformMapper.getAll(ipMap);
-	        
-	       
 	        //查看是否查询到数据库数据
 	        System.out.println("************************************");
 	        System.out.println(ipList.toString());
@@ -63,16 +61,24 @@ private IpformMapper ipformMapper;
 		return ipformMapper.selectByPrimaryKey(id);
 	}
 
+	public Ipform getIpformByIpAddress(String address) {
+		return ipformMapper.selectByIpAddress(address);
+	}
 	public void updateIpById(Ipform ipform) {
 		ipformMapper.updateByPrimaryKey(ipform);
 	}
-
-	public void deleteIpById(Integer id) {
-		// TODO Auto-generated method stub
-		ipformMapper.deleteByPrimaryKey(id);
+	
+	public void updateIpByIpAddressSelective(Ipform ipform) {
+		ipformMapper.updateByIpAddressSelective(ipform);
 	}
 
+	public void deleteIpById(Integer id) {
+		ipformMapper.deleteByPrimaryKey(id);
+	}
 	
+	public void deleteIpByIpAddress(String address) {
+		ipformMapper.deleteByIpAddress(address);
+	}
 
 	 
 }
