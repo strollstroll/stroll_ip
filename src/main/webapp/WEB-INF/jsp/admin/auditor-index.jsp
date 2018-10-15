@@ -69,7 +69,7 @@
                         </a>
                     </li >
                      <li>
-                        <a _href="<%=basePath%>/auditorIp/toUnconfirmIpList.do">
+                        <a _href="<%=basePath%>/ip/toHistoryIpList.do">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>IP地址历史记录</cite>
                         </a>

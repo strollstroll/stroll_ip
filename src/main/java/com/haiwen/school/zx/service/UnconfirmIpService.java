@@ -3,6 +3,8 @@ package com.haiwen.school.zx.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import com.haiwen.school.zx.beans.Ipform;
 import com.haiwen.school.zx.beans.UnconfirmIp;
 
@@ -13,7 +15,7 @@ public interface UnconfirmIpService {
 	
 	//获取所有待审核IP
 	List<UnconfirmIp> getAllUnconfirmIp();
-	Map<String, Object> getAll(int page, int limit, UnconfirmIp unconfirmIp);
+	Map<String, Object> getAll(int page, int limit, UnconfirmIp unconfirmIp,HttpSession session);
 	
 	//根据id（也就是ipNumber）获取一条待审核的IP地址信息
 	UnconfirmIp getUnconfirmIpById(Integer id);

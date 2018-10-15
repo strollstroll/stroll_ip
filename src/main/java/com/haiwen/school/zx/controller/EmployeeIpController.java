@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.haiwen.school.zx.beans.Ipform;
+import com.haiwen.school.zx.beans.Logininfo;
 import com.haiwen.school.zx.beans.UnconfirmIp;
 import com.haiwen.school.zx.service.IpService;
 import com.haiwen.school.zx.service.UnconfirmIpService;
@@ -59,8 +61,11 @@ public class EmployeeIpController {
 	//添加IP地址信息
 	@RequestMapping("/doAdd")
 	@ResponseBody
-	public Integer addIpform(UnconfirmIp unconfirmIp) {
+	public Integer addIpform(HttpSession session,UnconfirmIp unconfirmIp) {
+		//添加审核人员
+		Logininfo logininfo=(Logininfo)session.getAttribute("userInfo");
 		unconfirmIp.setUnconfirmStatus("添加待审核");
+		unconfirmIp.setSubmitter(logininfo.getNickname());
 		Integer result=0;
         try{
             unconfirmIpService.addUnconfirmIp(unconfirmIp);
@@ -88,11 +93,11 @@ public class EmployeeIpController {
 		return "employee/ip-edit";
 	}
 	
-	//将修改ip地址信息添加到待审核表中的，员ip表的中内容不变，审核完之后才发生变化
+	//将修改ip地址信息添加到待审核表中的，原ip表的中内容不变，审核完之后才发生变化
 	@RequestMapping("/doUpdateAddUnconfirmIp")
 	@ResponseBody
-	public Integer UpdateIpAddUnconfirmIp(Ipform ipform) {
-		
+	public Integer UpdateIpAddUnconfirmIp(HttpSession session,Ipform ipform) {
+
 		//将更改的ip信息插入到待审核表中
 		UnconfirmIp unconfirmIp=new UnconfirmIp();
 		unconfirmIp.setIpAddress(ipform.getIpAddress());
@@ -119,7 +124,10 @@ public class EmployeeIpController {
 		unconfirmIp.setIpTerminalnumber(ipform.getIpTerminalnumber());
 		//审核状态说明
 		unconfirmIp.setUnconfirmStatus("修改待审核");
-		
+		//添加审核人员
+		Logininfo logininfo=(Logininfo)session.getAttribute("userInfo");
+		unconfirmIp.setUnconfirmStatus("修改待审核");
+		unconfirmIp.setSubmitter(logininfo.getNickname());
 		Integer result=0;
 		
 		try {
@@ -136,7 +144,7 @@ public class EmployeeIpController {
 	//删除IP地址信息
 	@RequestMapping("/toDelete")
 	@ResponseBody
-	public Map<String, Object> deleteIp(int page,int limit,Integer id,Ipform ip) {
+	public Map<String, Object> deleteIp(int page,int limit,Integer id,Ipform ip,HttpSession session) {
 		Ipform ipform=ipService.getIpformById(id);
 		//将更改的ip信息插入到待审核表中
 				UnconfirmIp unconfirmIp=new UnconfirmIp();
@@ -166,6 +174,10 @@ public class EmployeeIpController {
 				unconfirmIp.setUnconfirmStatus("删除待审核");	
 				//在ipform表中将该ip的审核状态变为2（审核中）表示删除待审核
 				ipform.setApprovalStatus(2);
+				//添加审核人员
+				Logininfo logininfo=(Logininfo)session.getAttribute("userInfo");
+				unconfirmIp.setUnconfirmStatus("删除待审核");
+				unconfirmIp.setSubmitter(logininfo.getNickname());
 				ipService.updateIpById(ipform);
 		unconfirmIpService.addUnconfirmIp(unconfirmIp);
 

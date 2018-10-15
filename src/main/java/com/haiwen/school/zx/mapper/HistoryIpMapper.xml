@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.haiwen.school.zx.mapper.UnconfirmIpMapper" >
-  <resultMap id="BaseResultMap" type="com.haiwen.school.zx.beans.UnconfirmIp" >
-    <id column="ip_number" property="ipNumber" jdbcType="INTEGER" />
+<mapper namespace="com.haiwen.school.zx.mapper.HistoryIpMapper" >
+  <resultMap id="BaseResultMap" type="com.haiwen.school.zx.beans.HistoryIp" >
+    <id column="history_id" property="historyId" jdbcType="INTEGER" />
+    <result column="ip_number" property="ipNumber" jdbcType="INTEGER" />
     <result column="ip_address" property="ipAddress" jdbcType="VARCHAR" />
     <result column="ip_status" property="ipStatus" jdbcType="VARCHAR" />
     <result column="ip_remarks" property="ipRemarks" jdbcType="VARCHAR" />
@@ -25,49 +26,60 @@
     <result column="ip_outputrate" property="ipOutputrate" jdbcType="INTEGER" />
     <result column="ip_inputrate" property="ipInputrate" jdbcType="INTEGER" />
     <result column="ip_terminalnumber" property="ipTerminalnumber" jdbcType="INTEGER" />
-    <result column="unconfirm_status" property="unconfirmStatus" jdbcType="VARCHAR" />
-    <result column="submitter" property="submitter" jdbcType="VARCHAR" />
+    <result column="history_time" property="historyTime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ip_number, ip_address, ip_status, ip_remarks, ip_subnetmask, ip_addressnumber, ip_usetime, 
+    history_id,ip_number, ip_address, ip_status, ip_remarks, ip_subnetmask, ip_addressnumber, ip_usetime, 
     ip_username, ip_vlan, ip_connectingdevice, ip_port, ip_rate, ip_attribution, ip_broadbandacceptancenumber, 
     ip_SNnumber, ip_OLTaddress, ip_IOMusername, ip_installedaddress, ip_type, ip_WOTVBSSremarks, 
-    ip_outputrate, ip_inputrate, ip_terminalnumber,unconfirm_status,submitter
+    ip_outputrate, ip_inputrate, ip_terminalnumber,history_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from unconfirmip
-    where ip_number = #{ipNumber,jdbcType=INTEGER}
+    from historyip
+    where history_id = #{historyId,jdbcType=INTEGER}
+  </select>
+    <select id="selectByIpAddress" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from historyip
+    where ip_address = #{ipAddress,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from unconfirmip
-    where ip_number = #{ipNumber,jdbcType=INTEGER}
+    delete from historyip
+    where history_id = #{historyId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.haiwen.school.zx.beans.UnconfirmIp" >
-    insert into unconfirmip (ip_number,ip_address,  ip_status, 
+   <delete id="deleteByIpAddress" parameterType="java.lang.String" >
+    delete from historyip
+    where ip_address = #{ipAdress,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.haiwen.school.zx.beans.HistoryIp" >
+    insert into historyip (history_id,ip_number,ip_address,  ip_status, 
       ip_remarks, ip_subnetmask, ip_addressnumber, 
       ip_usetime, ip_username, ip_vlan, 
       ip_connectingdevice, ip_port, ip_rate, 
       ip_attribution, ip_broadbandacceptancenumber, 
       ip_SNnumber, ip_OLTaddress, ip_IOMusername, 
       ip_installedaddress, ip_type, ip_WOTVBSSremarks, 
-      ip_outputrate, ip_inputrate, ip_terminalnumber,unconfirm_status,submitter
+      ip_outputrate, ip_inputrate, ip_terminalnumber,history_time
       )
-    values (#{ipNumber,jdbcType=INTEGER}, #{ipAddress,jdbcType=VARCHAR}, #{ipStatus,jdbcType=VARCHAR}, 
+    values (#{historyIp,jdbcType=INTEGER}, #{ipNumber,jdbcType=INTEGER}, #{ipAddress,jdbcType=VARCHAR}, #{ipStatus,jdbcType=VARCHAR}, 
       #{ipRemarks,jdbcType=VARCHAR}, #{ipSubnetmask,jdbcType=VARCHAR}, #{ipAddressnumber,jdbcType=INTEGER}, 
       #{ipUsetime,jdbcType=DATE}, #{ipUsername,jdbcType=VARCHAR}, #{ipVlan,jdbcType=VARCHAR}, 
       #{ipConnectingdevice,jdbcType=VARCHAR}, #{ipPort,jdbcType=VARCHAR}, #{ipRate,jdbcType=VARCHAR}, 
       #{ipAttribution,jdbcType=VARCHAR}, #{ipBroadbandacceptancenumber,jdbcType=VARCHAR}, 
       #{ipSnnumber,jdbcType=INTEGER}, #{ipOltaddress,jdbcType=VARCHAR}, #{ipIomusername,jdbcType=VARCHAR}, 
       #{ipInstalledaddress,jdbcType=VARCHAR}, #{ipType,jdbcType=VARCHAR}, #{ipWotvbssremarks,jdbcType=VARCHAR}, 
-      #{ipOutputrate,jdbcType=INTEGER}, #{ipInputrate,jdbcType=INTEGER}, #{ipTerminalnumber,jdbcType=INTEGER},
-      #{unconfirmStatus,jdbcType=VARCHAR},#{submitter,jdbcType=VARCHAR}
+      #{ipOutputrate,jdbcType=INTEGER}, #{ipInputrate,jdbcType=INTEGER}, #{ipTerminalnumber,jdbcType=INTEGER}, #{historyTime,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.haiwen.school.zx.beans.UnconfirmIp" >
-    insert into unconfirmip
+  <insert id="insertSelective" parameterType="com.haiwen.school.zx.beans.HistoryIp" >
+    insert into historyip
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="historyId != null" >
+        history_id,
+      </if>
       <if test="ipNumber != null" >
         ip_number,
       </if>
@@ -137,14 +149,14 @@
       <if test="ipTerminalnumber != null" >
         ip_terminalnumber,
       </if>
-      <if test="unconfirmStatus != null" >
-        unconfirm_status,
-      </if>
-       <if test="submitter != null" >
-        submitter,
+      <if test="historyTime != null" >
+        history_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="historyId != null" >
+        #{historyId,jdbcType=INTEGER},
+      </if>
       <if test="ipNumber != null" >
         #{ipNumber,jdbcType=INTEGER},
       </if>
@@ -214,17 +226,17 @@
       <if test="ipTerminalnumber != null" >
         #{ipTerminalnumber,jdbcType=INTEGER},
       </if>
-      <if test="unconfirmStatus != null" >
-        #{unconfirmStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="unconfirmStatus != null" >
-        #{submitter,jdbcType=VARCHAR},
+      <if test="historyTime != null" >
+        #{historyTime,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.haiwen.school.zx.beans.UnconfirmIp" >
-    update unconfirmip
+  <update id="updateByPrimaryKeySelective" parameterType="com.haiwen.school.zx.beans.HistoryIp" >
+    update historyip
     <set >
+      <if test="ipNumber != null" >
+        ip_number = #{ipNumber,jdbcType=INTEGER},
+      </if>
       <if test="ipAddress != null" >
         ip_address = #{ipAddress,jdbcType=VARCHAR},
       </if>
@@ -291,18 +303,94 @@
       <if test="ipTerminalnumber != null" >
         ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER},
       </if>
-      <if test="unconfirmStatus != null" >
-        unconfirm_status = #{unconfirmStatus,jdbcType=VARCHAR},
-      </if>  
-     <if test="submitter != null" >
-        submitter = #{submitter,jdbcType=VARCHAR},
-      </if>    
+      <if test="historyTime != null" >
+        history_time = #{historyTime,jdbcType=VARCHAR},
+      </if>
     </set>
-    where ip_number = #{ipNumber,jdbcType=INTEGER}
+    where history_id = #{historyId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.haiwen.school.zx.beans.UnconfirmIp" >
-    update unconfirmip
-    set ip_address = #{ipAddress,jdbcType=VARCHAR},
+    <update id="updateByIpAddressSelective" parameterType="com.haiwen.school.zx.beans.HistoryIp" >
+    update historyip
+    <set >
+      <if test="ipNumber != null" >
+        ip_number = #{ipNumber,jdbcType=INTEGER},
+      </if>
+      <if test="ipAddress != null" >
+        ip_address = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ipStatus != null" >
+        ip_status = #{ipStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ipRemarks != null" >
+        ip_remarks = #{ipRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ipSubnetmask != null" >
+        ip_subnetmask = #{ipSubnetmask,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddressnumber != null" >
+        ip_addressnumber = #{ipAddressnumber,jdbcType=INTEGER},
+      </if>
+      <if test="ipUsetime != null" >
+        ip_usetime = #{ipUsetime,jdbcType=DATE},
+      </if>
+      <if test="ipUsername != null" >
+        ip_username = #{ipUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="ipVlan != null" >
+        ip_vlan = #{ipVlan,jdbcType=VARCHAR},
+      </if>
+      <if test="ipConnectingdevice != null" >
+        ip_connectingdevice = #{ipConnectingdevice,jdbcType=VARCHAR},
+      </if>
+      <if test="ipPort != null" >
+        ip_port = #{ipPort,jdbcType=VARCHAR},
+      </if>
+      <if test="ipRate != null" >
+        ip_rate = #{ipRate,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAttribution != null" >
+        ip_attribution = #{ipAttribution,jdbcType=VARCHAR},
+      </if>
+      <if test="ipBroadbandacceptancenumber != null" >
+        ip_broadbandacceptancenumber = #{ipBroadbandacceptancenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="ipSnnumber != null" >
+        ip_SNnumber = #{ipSnnumber,jdbcType=INTEGER},
+      </if>
+      <if test="ipOltaddress != null" >
+        ip_OLTaddress = #{ipOltaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ipIomusername != null" >
+        ip_IOMusername = #{ipIomusername,jdbcType=VARCHAR},
+      </if>
+      <if test="ipInstalledaddress != null" >
+        ip_installedaddress = #{ipInstalledaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ipType != null" >
+        ip_type = #{ipType,jdbcType=VARCHAR},
+      </if>
+      <if test="ipWotvbssremarks != null" >
+        ip_WOTVBSSremarks = #{ipWotvbssremarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ipOutputrate != null" >
+        ip_outputrate = #{ipOutputrate,jdbcType=INTEGER},
+      </if>
+      <if test="ipInputrate != null" >
+        ip_inputrate = #{ipInputrate,jdbcType=INTEGER},
+      </if>
+      <if test="ipTerminalnumber != null" >
+        ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER},
+      </if>
+      <if test="historyTime != null" >
+        history_time = #{historyTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ip_address = #{ipAddress,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.haiwen.school.zx.beans.HistoryIp" >
+    update historyip
+    set ip_number = #{ipNumber,jdbcType=INTEGER},
+      ip_address = #{ipAddress,jdbcType=VARCHAR},
       ip_status = #{ipStatus,jdbcType=VARCHAR},
       ip_remarks = #{ipRemarks,jdbcType=VARCHAR},
       ip_subnetmask = #{ipSubnetmask,jdbcType=VARCHAR},
@@ -324,19 +412,18 @@
       ip_outputrate = #{ipOutputrate,jdbcType=INTEGER},
       ip_inputrate = #{ipInputrate,jdbcType=INTEGER},
       ip_terminalnumber = #{ipTerminalnumber,jdbcType=INTEGER},
-      unconfirm_status = #{unconfirmStatus,jdbcType=VARCHAR},
-      submitter = #{submitter,jdbcType=VARCHAR}
-    where ip_number = #{ipNumber,jdbcType=INTEGER}
+      history_time = #{historyTime,jdbcType=VARCHAR}
+    where history_id = #{historyId,jdbcType=INTEGER}
   </update>
   <!-- 查询所有数据 -->
  
     <select id="getAll" resultMap="BaseResultMap" parameterType="java.util.Map">
      select 
-     ip_address, ip_number, ip_status, ip_remarks, ip_subnetmask, ip_addressnumber, ip_usetime, 
+     history_id,  ip_address, ip_number, ip_status, ip_remarks, ip_subnetmask, ip_addressnumber, ip_usetime, 
     ip_username, ip_vlan, ip_connectingdevice, ip_port, ip_rate, ip_attribution, ip_broadbandacceptancenumber, 
     ip_SNnumber, ip_OLTaddress, ip_IOMusername, ip_installedaddress, ip_type, ip_WOTVBSSremarks, 
-    ip_outputrate, ip_inputrate, ip_terminalnumber,unconfirm_status,submitter
-      from unconfirmip
+    ip_outputrate, ip_inputrate, ip_terminalnumber,history_time
+      from historyip
      <where>
       <if test="ipAddress!=null and ipAddress!=''">
         and ip_address like concat('%',concat(#{ipAddress,jdbcType=VARCHAR},'%'))

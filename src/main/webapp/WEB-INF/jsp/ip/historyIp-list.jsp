@@ -28,9 +28,9 @@
 <body>
 <div class="x-nav">
       <span class="layui-breadcrumb">
-        <a href="">IP管理审核员</a>
+        <a href="">IP地址管理</a>
         <a>
-          <cite>待审核IP列表</cite></a>
+          <cite>IP历史列表</cite></a>
       </span>
 </div>
 <!--根据IP地址搜索，刷新IP信息列表，添加IP信息  -->
@@ -49,19 +49,18 @@
     </table>	
 
 </div>
-<script type="text/html" id="ipbar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.ipNumber}}')">查看</a>
 
-	{{#  if(d.unconfirmStatus =="删除待审核"){ }}
-  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeDel">通过删除</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="cancelDel">驳回删除</a>
-    {{#  } else if(d.unconfirmStatus =="添加待审核") { }}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeAdd">通过添加</a>
-    <a class="layui-btn layui-btn-xs" lay-event="cancelAdd">驳回添加</a>
-    {{#  } else if(d.unconfirmStatus =="修改待审核") { }}
-	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeUpdate">通过修改</a>
-    <a class="layui-btn layui-btn-xs" lay-event="cancelUpdate">驳回修改</a>  
-	{{#  } }}
+<!-- <form id="idform" name="inputForm" action="" method="post" ></form> -->
+<script id="toolbar" type="text/html">
+    {{#  if(d.powerid == 1 ||d.powerid == 4){ }}
+    <button class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="upd" ><i class="layui-icon">&#xe642;</i>无详细资料</button>
+    {{#  } else { }}
+    <button class="layui-btn layui-btn-xs" lay-event="upd" onclick="openWin('IP信息','/school/user/explicit.do?id={{d.id}}')" ><i class="layui-icon">&#xe642;</i>查看详情</button>
+    {{#  } }}
+</script>
+<script type="text/html" id="ipbar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('IP地址信息查看','<%=basePath%>/ip/toGetIpWatch.do?id={{d.ipNumber}}')">查看</a>
+
 </script>
 <!-- 序号自增， -->
 <script type="text/html" id="zizeng">
@@ -74,11 +73,11 @@
         var form=layui.form;
         t=table.render({
             elem:'#infoTable',
-            url:'<%=basePath%>/auditorIp/getUnconfirmIpList.do',
+          	 url:'<%=basePath%>/ip/getHistoryIpList.do',
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
-            	/*  {field:'ipNumber',width: 86,title:'序号'}, */
+            	 {field:'ipNumber',width: 86,title:'序号'},
                  {field:'ipStatus',width: 86,title:'状态'},
                  {field:'ipRemarks',width: 150,title:'备注'},
                  {field:'ipAddress',width: 150,title:'IP地址'},
@@ -101,24 +100,18 @@
                  {field:'ipOutputrate',width: 86,title:'上行速率'},
                  {field:'ipInputrate',width: 86,title:'下行速率'},
                  {field:'ipTerminalnumber',width: 100,title:'对应终端数'},
-                 {field:'unconfirmStatus',width: 120,title:'审核状态',fixed: 'right'},
-                 {field:'submitter',width: 80,title:'提交人',fixed: 'right'},
-                 {field:'opt',width: 210,title:'操作',toolbar:'#ipbar',fixed: 'right'}
+                 {field:'historyTime',width: 110,title:'历史时间'},
+                 /* {field:'opt',width: 86,title:'操作',toolbar:'#toolbar'} */ 
+                 {field:'opt',width: 80,title:'操作',toolbar:'#ipbar',fixed: 'right'}
             ]],
             id:'ipTable'
             ,page:true
         });
-    /*   form.on('submit(search)',function (data) {
-            console.log(data);
-            t.reload({
-                where:data.field
-            });
-            return false;
-        }); */
+
         var $ = layui.$, active = {
         	    reload: function(){
         	      var ipTableReload = $('#ipTableReload');
-        	      
+        	     
         	      //执行重载
         	      table.reload('ipTable', {
         	        page: {
@@ -137,99 +130,7 @@
             active[type] ? active[type].call(this) : '';
           });
         
-        //监听行工具事件,执行删除事件
-        table.on('tool(userTable)', function(obj){ //注：tool 是工具条事件名，userTable 是 table 原始容器的属性 lay-filter="对应的值"
-          var data = obj.data //获得当前行数据
-          ,layEvent = obj.event; //获得 lay-event 对应的值
-          if(layEvent === 'agreeDel'){
-            layer.confirm('确定通过删除该条IP地址？', function(index){
-                table.reload('ipTable',{
-              	  url:'<%=basePath%>/auditorIp/toAgreeDelete.do'
-              	  ,where:{
-              		  id:data.ipNumber
-              	  }
-                });
-            	   
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-          else if (layEvent === 'cancelDel'){
-            layer.confirm('删除该条IP地址不通过？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toCancelDelete.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-          else if (layEvent === 'agreeAdd'){
-            layer.confirm('审核通过添加该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toAgreeAdd.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-          else if (layEvent === 'cancelAdd'){
-            layer.confirm('不通过添加该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toCancelAdd.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-            else if (layEvent === 'agreeUpdate'){
-            layer.confirm('审核通过修改该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toAgreeUpdate.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-            else if (layEvent === 'cancelUpdate'){
-            layer.confirm('不通过修改该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toCancelUpdate.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-
-        });
-        
-
-        
+    
     });
     function openWin(title,url,w,h){
         if (title == null || title == '') {
@@ -293,8 +194,6 @@
    return fmt;
  }
  
-
 </script>
-</body>
 
 </html>

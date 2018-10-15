@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
+import com.haiwen.school.zx.beans.HistoryIp;
 import com.haiwen.school.zx.beans.Ipform;
+import com.haiwen.school.zx.mapper.HistoryIpMapper;
 import com.haiwen.school.zx.mapper.IpformMapper;
 import com.haiwen.school.zx.service.IpService;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,13 @@ import org.springframework.stereotype.Service;
 public class IpServiceImpl implements IpService{
 @Autowired
 private IpformMapper ipformMapper;
+@Autowired
+private HistoryIpMapper historyIpMapper;
 
 	public List<Ipform> getAllIpform() {
 		// TODO Auto-generated method stub
 		//return ipformMapper.getAll();
-		return null;
+		return ipformMapper.getAll(null);
 	}
 
 	public Map<String, Object> getAll(int page, int limit, Ipform ipform) {
@@ -78,6 +82,32 @@ private IpformMapper ipformMapper;
 	
 	public void deleteIpByIpAddress(String address) {
 		ipformMapper.deleteByIpAddress(address);
+	}
+
+	public Map<String, Object> getHistoryIpAll(int page, int limit, HistoryIp historyIp) {
+		Map<String,Object> ipMap=new HashMap<String,Object>();
+		System.out.println(historyIp.getIpAddress());
+		if(StringUtil.isNotEmpty(historyIp.getIpAddress())) {
+			ipMap.put("ipAddress", historyIp.getIpAddress());
+		}
+
+        PageHelper.startPage(page, limit);
+        List<HistoryIp> ipList=historyIpMapper.getAll(ipMap);
+        //查看是否查询到数据库数据
+        System.out.println("************************************");
+        System.out.println(ipList.toString());
+        Iterator itr=ipList.iterator();
+        while(itr.hasNext())
+        	System.out.println(itr.next().toString());
+        System.out.println("************************************");
+        PageInfo<HistoryIp> pageInfo=new PageInfo<HistoryIp>(ipList);
+        Map<String,Object> map=new HashMap<String, Object>();
+
+        map.put("code",0);
+        map.put("msg","查询数据成功！");
+        map.put("count",pageInfo.getTotal());
+        map.put("data",pageInfo.getList());
+        return map;
 	}
 
 	 

@@ -172,6 +172,12 @@
       <input type="text" name="ipTerminalnumber" lay-verify="ipWatch" value="${ip.ipTerminalnumber}" autocomplete="off" placeholder="请输入对应终端数" class="layui-input">
     </div>
   </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">审核状态</label>
+    <div class="layui-input-block">
+      <input type="text" name="unconfirmStatus" lay-verify="ipWatch" value="${ip.unconfirmStatus}" autocomplete="off" disabled="disabled" class="layui-input">
+    </div>
+  </div>
    <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit="" lay-filter="update">修改</button>
@@ -196,7 +202,7 @@
         form.on('submit(update)', function(data){
             console.log(data);
             $.ajax({
-                url:'<%=basePath%>/ip/doUpdate.do',
+                url:'<%=basePath%>/unconfirmIp/doUpdate.do',
                 data:data.field,
                 method:'post',
                 success:function (data) {

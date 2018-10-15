@@ -46,41 +46,6 @@
 <!-- 中部开始 -->
 <!-- 左侧菜单开始 -->
 
-<!-- **************************** -->
-<%-- <div class="left-nav">
-    <div id="side-nav">
-        <ul id="nav">
-            <li>
-                <a href="javascript:;">
-                    <i class="iconfont">&#xe6b8;</i>
-                    <cite>IP地址信息</cite>
-                    <i class="iconfont nav_right">&#xe697;</i>
-                </a>
-                <ul class="sub-menu">
-                    <li>
-                        <a _href="<%=basePath%>/user/toIpList.do">   //跳转到对应的控制器
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP地址列表</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="<%=basePath%>/student/tolist.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP修改待确认</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="<%=basePath%>/teacher/tolist.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP修改记录</cite>
-                        </a>
-                    </li >
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div> --%>
-<!-- **************************** -->
 <div class="left-nav">
     <div id="side-nav">
         <ul id="nav">
@@ -98,15 +63,21 @@
                         </a>
                     </li >
                     <li>
-                        <a _href="<%=basePath%>/ip/toIpformList1.do">
+                        <a _href="<%=basePath%>/auditorIp/toUnconfirmIpList.do">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP修改待确认</cite>
+                            <cite>IP修改审核</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="<%=basePath%>/ip/toHistoryIpList.do">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>IP地址历史记录</cite>
                         </a>
                     </li >
                     <li>
                         <a _href="<%=basePath%>/ip/toIpformEdit.do">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP修改记录</cite>
+                            <cite>IP地址操作记录</cite>
                         </a>
                     </li >
                 </ul>
@@ -115,72 +86,6 @@
     </div>
 </div>
 
-
-
-
-<%-- <div class="left-nav">
-    <div id="side-nav">
-        <ul id="nav">
-            <li>
-                <a href="javascript:;">
-                    <i class="iconfont">&#xe6b8;</i>
-                    <cite>会员管理</cite>
-                    <i class="iconfont nav_right">&#xe697;</i>
-                </a>
-                <ul class="sub-menu">
-                    <li>
-                        <a _href="<%=basePath%>/user/tolist.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>会员列表</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="<%=basePath%>/student/tolist.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>学生列表</cite>
-                        </a>
-                    </li >
-                    <li>
-                        <a _href="<%=basePath%>/teacher/tolist.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>教师列表</cite>
-                        </a>
-                    </li >
-                </ul>
-            </li>
-            <li>
-                <a href="javascript:;">
-                    <i class="iconfont">&#xe6b8;</i>
-                    <cite>课程</cite>
-                    <i class="iconfont nav_right">&#xe697;</i>
-                </a>
-                <ul class="sub-menu">
-                    <li>
-                        <a _href="<%=basePath%>/course/toList.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>课程列表</cite>
-                        </a>
-                    </li >
-                </ul>
-            </li>
-            <li>
-                <a href="javascript:;">
-                    <i class="iconfont">&#xe6b8;</i>
-                    <cite>管理</cite>
-                    <i class="iconfont nav_right">&#xe697;</i>
-                </a>
-                <ul class="sub-menu">
-                    <li>
-                        <a _href="<%=basePath%>/admin/toList.do">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>审核列表</cite>
-                        </a>
-                    </li >
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div> --%>
 <!-- <div class="x-slide_left"></div> -->
 <!-- 左侧菜单结束 -->
 <!-- 右侧主体开始 -->

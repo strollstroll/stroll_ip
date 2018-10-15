@@ -3,6 +3,7 @@ package com.haiwen.school.zx.service;
 import java.util.List;
 import java.util.Map;
 
+import com.haiwen.school.zx.beans.HistoryIp;
 import com.haiwen.school.zx.beans.Ipform;
 
 public interface IpService {
@@ -28,4 +29,6 @@ public interface IpService {
 	void deleteIpById(Integer id);
 	
 	void deleteIpByIpAddress(String address);
+
+	Map<String, Object> getHistoryIpAll(int page, int limit, HistoryIp historyIp);
 }

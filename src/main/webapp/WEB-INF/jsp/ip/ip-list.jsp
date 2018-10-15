@@ -1,11 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: Administrator
-  Date: 2018/8/8
-  Time: 15:37
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page isELIgnored="false" %>
 <%
@@ -30,12 +24,15 @@
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     
+    
+
+
 </head>
 <body>
+
 <div class="x-nav">
       <span class="layui-breadcrumb">
-        <a href="">首页</a>
-        <a href="">用户</a>
+        <a href="">IP地址管理</a>
         <a>
           <cite>IP列表</cite></a>
       </span>
@@ -43,18 +40,20 @@
 <!--根据IP地址搜索，刷新IP信息列表，添加IP信息  -->
 <div class="x-body">
  	<div class="demoTable">
-	<div class="layui-inline">
-   		<input class="layui-input" name="ipAddress" placeholder="IP地址" id="ipTableReload" autocomplete="off">
-  	</div>
-  	<!-- 根据IP搜索对应的IP地址信息 -->
-  	<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
-  	<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
+		<div class="layui-inline">
+   			<input class="layui-input" name="ipAddress" placeholder="IP地址" id="ipTableReload" autocomplete="off">
+  		</div>
+  		<!-- 根据IP搜索对应的IP地址信息 -->
+  		<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
+  		<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
-    <button class="layui-btn layui-btn-normal" onclick="openWin('IP地址添加','<%=basePath%>/ip/addIp.do')">添加</button>
-    <button onclick='<%=basePath%>/ip/exportExcel.do'>excel导出</button>
-    <input id="exportExcel" style="width: 80px;" class="greenbutton" type="button" value="导出" onclick="goToUrl()">
-    <a href="javascript:if(confirm('确实要删除吗?'))location='<%=basePath%>/ip/exportExcel.do'">导出</a>
-</div>
+   		 <button class="layui-btn layui-btn-normal" onclick="openWin('IP地址添加','<%=basePath%>/ip/addIp.do')">添加</button>
+  		 <button class="layui-btn layui-btn-normal" onclick="openWin('IP地址Excel导入','<%=basePath%>/excelIp/importExcel.do')">导入excel</button>
+  		<form id="excelForm" method="post">
+		 <button  id="excelForm" class="layui-btn layui-btn-normal" onclick="formSubmit()">导出excel</button>
+    	</form> 
+	</div>
+	
     <table id="infoTable" lay-filter="userTable" >
 	
     </table>	
@@ -92,7 +91,7 @@
         t=table.render({
             elem:'#infoTable',
             <%-- url:'<%=basePath%>/user/getList.do', --%>
-            url:'<%=basePath%>/ip/getIpformList.do',
+          	 url:'<%=basePath%>/ip/getIpformList.do',
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
@@ -120,7 +119,7 @@
                  {field:'ipInputrate',width: 86,title:'下行速率'},
                  {field:'ipTerminalnumber',width: 100,title:'对应终端数'},
                  /* {field:'opt',width: 86,title:'操作',toolbar:'#toolbar'} */ 
-                 {field:'opt',width: 160,title:'操作',toolbar:'#ipbar',fixed: 'right'}
+                 {field:'opt',width: 170,title:'操作',toolbar:'#ipbar',fixed: 'right'}
             ]],
             id:'ipTable'
             ,page:true
@@ -132,10 +131,13 @@
             });
             return false;
         }); */
+      //***********************************
+
+        //***********************************
         var $ = layui.$, active = {
         	    reload: function(){
         	      var ipTableReload = $('#ipTableReload');
-        	      
+        	     
         	      //执行重载
         	      table.reload('ipTable', {
         	        page: {
@@ -157,6 +159,7 @@
         //监听行工具事件,执行删除事件
         table.on('tool(userTable)', function(obj){ //注：tool 是工具条事件名，userTable 是 table 原始容器的属性 lay-filter="对应的值"
           var data = obj.data //获得当前行数据
+
           ,layEvent = obj.event; //获得 lay-event 对应的值
           if(layEvent === 'del'){
             layer.confirm('真的删除行么', function(index){
@@ -243,19 +246,18 @@
  
  //导出excel链接
  //=====================导出数据======================
-function goToUrl() {
-	/* getInfo();
-	var idlist=document.getElementById("idlist").value;
-	//alert(idlist); */
-   	var panduan=confirm("确认导出数据?");
-   	if (panduan==true){
- //     	alert('请求成功！');
-   		location.href='<%=basePath%>/ip/exportExcel.do';
-   		//idform.submit();
-   	
-   	}
+	 
+</script>
+<script type="text/javascript">
+function formSubmit(){
+	var postForm = document.getElementById("excelForm");
+	var panduan=confirm("确认导出数据?");
+	if(panduan==true){
+		postForm.action = '<%=basePath%>/ip/exportExcel.do';
+		postForm.submit();
+	}
+
 }
 </script>
-</body>
 
 </html>

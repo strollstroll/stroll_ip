@@ -4,10 +4,10 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class UnconfirmIp {
+public class ExcelIp {
 	private String ipAddress;
 
-    private Integer ipNumber;
+    private Integer ipId;
 
     private String ipStatus;
 
@@ -49,13 +49,9 @@ public class UnconfirmIp {
     private Integer ipOutputrate;
 
     private Integer ipInputrate;
-
+    
     private Integer ipTerminalnumber;
     
-    private String unconfirmStatus;
-    
-    private String submitter;
-
     public String getIpAddress() {
         return ipAddress;
     }
@@ -64,12 +60,12 @@ public class UnconfirmIp {
         this.ipAddress = ipAddress == null ? null : ipAddress.trim();
     }
 
-    public Integer getIpNumber() {
-        return ipNumber;
+    public Integer getIpId() {
+        return ipId;
     }
 
-    public void setIpNumber(Integer ipNumber) {
-        this.ipNumber = ipNumber;
+    public void setIpId(Integer ipId) {
+        this.ipId = ipId;
     }
 
     public String getIpStatus() {
@@ -239,25 +235,10 @@ public class UnconfirmIp {
         this.ipTerminalnumber = ipTerminalnumber;
     }
 
-	public String getUnconfirmStatus() {
-		return unconfirmStatus;
-	}
-
-	public void setUnconfirmStatus(String unconfirmStatus) {
-		this.unconfirmStatus = unconfirmStatus;
-	}
-
-	public String getSubmitter() {
-		return submitter;
-	}
-
-	public void setSubmitter(String submitter) {
-		this.submitter = submitter;
-	}
 	
 	@Override
 	public String toString() {
-		return "Ipform [ipAddress=" + ipAddress + ", ipNumber=" + ipNumber + ", ipStatus=" + ipStatus + ", ipRemarks="
+		return "Ipform [ipAddress=" + ipAddress + ", ipId=" + ipId + ", ipStatus=" + ipStatus + ", ipRemarks="
 				+ ipRemarks + ", ipSubnetmask=" + ipSubnetmask + ", ipAddressnumber=" + ipAddressnumber + ", ipUsetime="
 				+ ipUsetime + ", ipUsername=" + ipUsername + ", ipVlan=" + ipVlan + ", ipConnectingdevice="
 				+ ipConnectingdevice + ", ipPort=" + ipPort + ", ipRate=" + ipRate + ", ipAttribution=" + ipAttribution
@@ -265,11 +246,7 @@ public class UnconfirmIp {
 				+ ", ipOltaddress=" + ipOltaddress + ", ipIomusername=" + ipIomusername + ", ipInstalledaddress="
 				+ ipInstalledaddress + ", ipType=" + ipType + ", ipWotvbssremarks=" + ipWotvbssremarks
 				+ ", ipOutputrate=" + ipOutputrate + ", ipInputrate=" + ipInputrate + ", ipTerminalnumber="
-				+ ipTerminalnumber + ",unconfirmStatus="+unconfirmStatus+",submitter="+submitter+  "]";
+				+ ipTerminalnumber +  "]";
 	}
 
-
-
-
-    
 }

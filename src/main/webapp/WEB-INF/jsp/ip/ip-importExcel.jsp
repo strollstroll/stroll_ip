@@ -1,17 +1,12 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page isELIgnored="false" %>
-<%
-    String path = request.getContextPath();
-    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-            + path;
-%>
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>IP信息列表</title>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>  
+<%  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;  
+%>  
+<html>  
+  <head>  
+  	<meta charset="UTF-8">
+    <title>IP地址批量添加</title>
     <meta name="renderer" content="webkit|ie-comp|ie-stand">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -24,61 +19,97 @@
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     
-</head>
-<body>
-<div class="x-nav">
-      <span class="layui-breadcrumb">
-        <a href="">IP管理审核员</a>
-        <a>
-          <cite>待审核IP列表</cite></a>
-      </span>
-</div>
-<!--根据IP地址搜索，刷新IP信息列表，添加IP信息  -->
-<div class="x-body">
+    <base href="<%=basePath%>">  
+    <script type="text/javascript" src="<%=basePath%>/static/jquery.min.js"></script>  
+    <script type="text/javascript" src="<%=basePath%>/static/jquery.form.js"></script>   
+    <script type="text/javascript">  
+            //ajax 方式上传文件操作  
+             $(document).ready(function(){  
+                $('#btn').click(function(){  
+                    if(checkData()){  
+                        $('#form1').ajaxSubmit({    
+                            url:'<%=basePath%>/excelIp/ajaxUpload.do',  
+                            dataType: 'text',
+                            success: resutlMsg,  
+                            error: errorMsg  
+                        });   
+                        function resutlMsg(msg){  
+                            alert(msg);     
+                            $("#upfile").val("");  
+                        }  
+                        function errorMsg(){   
+                            alert("导入excel出错！");      
+                        }  
+                    }  
+                });  
+             });  
+               
+             //JS校验form表单信息  
+             function checkData(){  
+                var fileDir = $("#upfile").val();  
+                var suffix = fileDir.substr(fileDir.lastIndexOf("."));  
+                if("" == fileDir){  
+                    alert("选择需要导入的Excel文件！");  
+                    return false;  
+                }  
+                if(".xls" != suffix && ".xlsx" != suffix ){  
+                    alert("选择Excel格式的文件导入！");  
+                    return false;  
+                }  
+                return true;  
+             }  
+    </script>   
+  </head>  
+    
+  <body>  
+  <!-- <div>1.通过简单的form表单提交方式，进行文件的上</br> 2.通过jquery.form.js插件提供的form表单一步提交功能 </div></br>   -->
+    <form method="POST"  enctype="multipart/form-data" id="form1" action="<%=basePath%>/excelIp/ajaxUpload.do">  
+        <table>  
+         <tr>  
+            <td align="center">上传文件: </td>  
+            <td align="center"> <input id="upfile" type="file" name="upfile"></td>  
+ 
+            <td><input type="submit" value="提交" onclick="checkData()"></td> 
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      		</td> 
+            <td><input type="button" value="ajax方式提交" id="btn" name="btn" ></td>  
+         </tr>  
+        </table> 
+
+    </form>  
+ 
+ 
+ 
+ <div class="x-body">
  	<div class="demoTable">
-	<div class="layui-inline">
-   		<input class="layui-input" name="ipAddress" placeholder="IP地址" id="ipTableReload" autocomplete="off">
-  	</div>
-  	<!-- 根据IP搜索对应的IP地址信息 -->
-  	<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
-  	<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
+		<div class="layui-inline">
+   			<input class="layui-input" name="ipAddress" placeholder="IP地址" id="ipTableReload" autocomplete="off">
+  		</div>
+  		<!-- 根据IP搜索对应的IP地址信息 -->
+  		<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
+  		<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
-</div>
+
+	</div>
+	
     <table id="infoTable" lay-filter="userTable" >
 	
     </table>	
 
 </div>
-<script type="text/html" id="ipbar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.ipNumber}}')">查看</a>
-
-	{{#  if(d.unconfirmStatus =="删除待审核"){ }}
-  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeDel">通过删除</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="cancelDel">驳回删除</a>
-    {{#  } else if(d.unconfirmStatus =="添加待审核") { }}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeAdd">通过添加</a>
-    <a class="layui-btn layui-btn-xs" lay-event="cancelAdd">驳回添加</a>
-    {{#  } else if(d.unconfirmStatus =="修改待审核") { }}
-	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeUpdate">通过修改</a>
-    <a class="layui-btn layui-btn-xs" lay-event="cancelUpdate">驳回修改</a>  
-	{{#  } }}
-</script>
-<!-- 序号自增， -->
-<script type="text/html" id="zizeng">
-    {{d.LAY_TABLE_INDEX+1}}
-</script>
-<script>
+ <script>
     var t;
     layui.use(['table','layer','laydate','form'],function () {
         var table=layui.table;
         var form=layui.form;
         t=table.render({
             elem:'#infoTable',
-            url:'<%=basePath%>/auditorIp/getUnconfirmIpList.do',
+            <%-- url:'<%=basePath%>/user/getList.do', --%>
+          	 url:'<%=basePath%>/excelIp/getExcelIpList.do',
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
-            	/*  {field:'ipNumber',width: 86,title:'序号'}, */
+            	 {field:'ipNumber',width: 86,title:'序号'},
                  {field:'ipStatus',width: 86,title:'状态'},
                  {field:'ipRemarks',width: 150,title:'备注'},
                  {field:'ipAddress',width: 150,title:'IP地址'},
@@ -101,9 +132,8 @@
                  {field:'ipOutputrate',width: 86,title:'上行速率'},
                  {field:'ipInputrate',width: 86,title:'下行速率'},
                  {field:'ipTerminalnumber',width: 100,title:'对应终端数'},
-                 {field:'unconfirmStatus',width: 120,title:'审核状态',fixed: 'right'},
-                 {field:'submitter',width: 80,title:'提交人',fixed: 'right'},
-                 {field:'opt',width: 210,title:'操作',toolbar:'#ipbar',fixed: 'right'}
+                 /* {field:'opt',width: 86,title:'操作',toolbar:'#toolbar'} */ 
+                 {field:'opt',width: 170,title:'操作',toolbar:'#ipbar',fixed: 'right'}
             ]],
             id:'ipTable'
             ,page:true
@@ -115,10 +145,13 @@
             });
             return false;
         }); */
+      //***********************************
+
+        //***********************************
         var $ = layui.$, active = {
         	    reload: function(){
         	      var ipTableReload = $('#ipTableReload');
-        	      
+        	     
         	      //执行重载
         	      table.reload('ipTable', {
         	        page: {
@@ -140,11 +173,14 @@
         //监听行工具事件,执行删除事件
         table.on('tool(userTable)', function(obj){ //注：tool 是工具条事件名，userTable 是 table 原始容器的属性 lay-filter="对应的值"
           var data = obj.data //获得当前行数据
+
           ,layEvent = obj.event; //获得 lay-event 对应的值
-          if(layEvent === 'agreeDel'){
-            layer.confirm('确定通过删除该条IP地址？', function(index){
+          if(layEvent === 'del'){
+            layer.confirm('真的删除行么', function(index){
+            	
+            	   //向服务端发送删除指令
                 table.reload('ipTable',{
-              	  url:'<%=basePath%>/auditorIp/toAgreeDelete.do'
+              	  url:'<%=basePath%>/ip/toDelete.do'
               	  ,where:{
               		  id:data.ipNumber
               	  }
@@ -154,78 +190,7 @@
               layer.close(index);
            
             });
-          }
-          else if (layEvent === 'cancelDel'){
-            layer.confirm('删除该条IP地址不通过？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toCancelDelete.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-          else if (layEvent === 'agreeAdd'){
-            layer.confirm('审核通过添加该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toAgreeAdd.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-          else if (layEvent === 'cancelAdd'){
-            layer.confirm('不通过添加该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toCancelAdd.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-            else if (layEvent === 'agreeUpdate'){
-            layer.confirm('审核通过修改该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toAgreeUpdate.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-            else if (layEvent === 'cancelUpdate'){
-            layer.confirm('不通过修改该条IP地址？', function(index){
-                table.reload('ipTable',{
-                  url:'<%=basePath%>/auditorIp/toCancelUpdate.do'
-                  ,where:{
-                    id:data.ipNumber
-                  }
-                });
-                 
-              obj.del(); //删除对应行（tr）的DOM结构
-              layer.close(index);
-           
-            });
-          }
-
+          } 
         });
         
 
@@ -293,8 +258,22 @@
    return fmt;
  }
  
-
+ //导出excel链接
+ //=====================导出数据======================
+	 
 </script>
-</body>
+<script type="text/javascript">
+function formSubmit(){
+	var postForm = document.getElementById("excelForm");
+	var panduan=confirm("确认导出数据?");
+	if(panduan==true){
+		postForm.action = '<%=basePath%>/ip/exportExcel.do';
+		postForm.submit();
+	}
 
-</html>
+}
+</script>
+ 
+ 
+      
+  </body>

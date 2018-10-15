@@ -60,7 +60,10 @@
 
 	{{#  if(d.unconfirmStatus =="删除待审核"||d.unconfirmStatus =="审核未通过(删除操作)"){ }}
   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消审核</a>
-    {{#  } else { }}
+    {{#  } else if(d.unconfirmStatus =="添加待审核"||d.unconfirmStatus =="审核未通过(添加操作)"){ }}
+	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.ipNumber}}')">再次编辑</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delAdd">取消审核</a>
+ 	{{#  } else { }}
 	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.ipNumber}}')">再次编辑</a>
   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消审核</a>
     {{#  } }}
@@ -142,24 +145,40 @@
         table.on('tool(userTable)', function(obj){ //注：tool 是工具条事件名，userTable 是 table 原始容器的属性 lay-filter="对应的值"
           var data = obj.data //获得当前行数据
           ,layEvent = obj.event; //获得 lay-event 对应的值
-          if(layEvent === 'del'){
+          if(layEvent === 'delAdd'){
             layer.confirm('确定取消删除该条IP信息嘛？', function(index){
             	
             	   //向服务端发送删除指令
                 table.reload('ipTable',{
-              	  url:'<%=basePath%>/unconfirmIp/toDelete.do'
+              	  url:'<%=basePath%>/unconfirmIp/toDeleteAdd.do'
               	  ,where:{
               		  id:data.ipNumber
               	  }
                 });
-            	   
+           	   
               obj.del(); //删除对应行（tr）的DOM结构
               layer.close(index);
            
             });
-          } 
+          }
+          else if(layEvent === 'del'){
+              layer.confirm('确定取消删除该条IP信息嘛？', function(index){
+              	
+           	   //向服务端发送删除指令
+               table.reload('ipTable',{
+             	  url:'<%=basePath%>/unconfirmIp/toDelete.do'
+             	  ,where:{
+             		  id:data.ipNumber
+             	  }
+               });
+           	   
+             obj.del(); //删除对应行（tr）的DOM结构
+             layer.close(index);
+          
+           });
+          }
         });
-        
+       
 
         
     });

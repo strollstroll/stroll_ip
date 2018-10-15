@@ -14,11 +14,15 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.haiwen.school.zx.beans.HistoryIp;
 import com.haiwen.school.zx.beans.Ipform;
 import com.haiwen.school.zx.beans.UnconfirmIp;
+import com.haiwen.school.zx.mapper.HistoryIpMapper;
+import com.haiwen.school.zx.service.AuditorIpService;
 import com.haiwen.school.zx.service.IpService;
 import com.haiwen.school.zx.service.UnconfirmIpService;
 import com.haiwen.school.zx.service.UserService;
+import com.haiwen.school.zx.util.HistoryIpAddUtil;
 /**
  *面对管理审核员 
  */
@@ -31,7 +35,11 @@ public class AuditorIpController {
 	@Autowired
 	private UnconfirmIpService unconfirmIpService;
 	@Autowired
+	private AuditorIpService auditorIpService;
+	@Autowired
     private UserService userService;
+	@Autowired
+	private HistoryIpMapper historyIpMapper;
 	//注册一个类型解析器将date类型输入到数据库中
 	@org.springframework.web.bind.annotation.InitBinder
 	 public void InitBinder(WebDataBinder binder){
@@ -65,7 +73,7 @@ public class AuditorIpController {
 	@ResponseBody
 	public Map<String, Object> toUnconfirmIp(int page, int limit, UnconfirmIp unconfirmIp) {
 		
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 	
 	
@@ -75,7 +83,7 @@ public class AuditorIpController {
 		UnconfirmIp unconfirm=unconfirmIpService.getUnconfirmIpById(id);
 		ipService.deleteIpByIpAddress(unconfirm.getIpAddress());
 		unconfirmIpService.deleteUnconfirmIpById(id);
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 	@RequestMapping("/toCancelDelete")
 	@ResponseBody
@@ -83,7 +91,7 @@ public class AuditorIpController {
 		UnconfirmIp unconfirm=unconfirmIpService.getUnconfirmIpById(id);
 		unconfirm.setUnconfirmStatus("审核未通过(删除操作)");
 		unconfirmIpService.updateUnconfirmIpById(unconfirm);
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 	
 	@RequestMapping("/toAgreeAdd")
@@ -116,7 +124,13 @@ public class AuditorIpController {
 		   ipform.setApprovalStatus(0);//状态设置为无审核
 		   ipService.addIp(ipform);
 		   unconfirmIpService.deleteUnconfirmIpById(id);
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+	        //添加到历史表中
+	        ipService.getIpformByIpAddress(ipform.getIpAddress());
+	       HistoryIpAddUtil historyIpAddUtil=new HistoryIpAddUtil();
+	       //由于新添加的字段ipNumber（序号）还没有生成是mysql自增生成的。需要从数据库获取。
+	       HistoryIp historyIp=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(ipform.getIpAddress()));
+	        historyIpMapper.insertSelective(historyIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 	@RequestMapping("/toCancelAdd")
 	@ResponseBody
@@ -124,7 +138,7 @@ public class AuditorIpController {
 		UnconfirmIp unconfirm=unconfirmIpService.getUnconfirmIpById(id);
 		unconfirm.setUnconfirmStatus("审核未通过(添加操作)");
 		unconfirmIpService.updateUnconfirmIpById(unconfirm);
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 	
 	@RequestMapping("/toAgreeUpdate")
@@ -157,7 +171,12 @@ public class AuditorIpController {
 		   ipform.setApprovalStatus(0);
 		   ipService.updateIpByIpAddressSelective(ipform);
 		   unconfirmIpService.deleteUnconfirmIpById(id);
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+			//添加到历史记录表中
+	       HistoryIpAddUtil historyIpAddUtil=new HistoryIpAddUtil();
+	       //由于新添加的字段ipNumber（序号）还没有生成是mysql自增生成的。需要从数据库获取。
+	       HistoryIp historyIp=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(ipform.getIpAddress()));
+	        historyIpMapper.insertSelective(historyIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 	@RequestMapping("/toCancelUpdate")
 	@ResponseBody
@@ -165,6 +184,6 @@ public class AuditorIpController {
 		UnconfirmIp unconfirm=unconfirmIpService.getUnconfirmIpById(id);
 		unconfirm.setUnconfirmStatus("审核未通过(修改操作)");
 		unconfirmIpService.updateUnconfirmIpById(unconfirm);
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+		return auditorIpService.getAll(page,limit,unconfirmIp);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,11 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.haiwen.school.zx.beans.Ipform;
+import com.haiwen.school.zx.beans.Logininfo;
 import com.haiwen.school.zx.beans.UnconfirmIp;
 import com.haiwen.school.zx.service.IpService;
 import com.haiwen.school.zx.service.UnconfirmIpService;
 import com.haiwen.school.zx.service.UserService;
-import com.haiwen.school.zx.util.ExcelUtil;
+import com.haiwen.school.zx.util.ExportExcelUtil;
 
 /**
  * 对于普通管理员的增删改添加到审核页面中，提交给审核员处理
@@ -59,9 +61,8 @@ public class UnconfirmIpController {
 	//获取待审核表里的所有IP信息
 	@RequestMapping("/getUnconfirmIpList")
 	@ResponseBody
-	public Map<String, Object> toUnconfirmIp(int page, int limit, UnconfirmIp unconfirmIp) {
-		
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+	public Map<String, Object> toUnconfirmIp(int page, int limit, UnconfirmIp unconfirmIp,HttpSession session) {
+		return unconfirmIpService.getAll(page,limit,unconfirmIp,session);
 	}
 	
 	//跳转到IP编辑页面
@@ -112,8 +113,14 @@ public class UnconfirmIpController {
 	@RequestMapping("/doUpdate")
 	@ResponseBody
 	public Integer updateIp(UnconfirmIp unconfirmIp) {
+		if(unconfirmIp.getUnconfirmStatus().equals("审核未通过(添加操作)")) {
+			unconfirmIp.setUnconfirmStatus("添加待审核");
+
+		}else if (unconfirmIp.getUnconfirmStatus().equals("审核未通过(修改操作)")) {
+			unconfirmIp.setUnconfirmStatus("修改待审核");
+			System.out.println(unconfirmIp.toString());
+		}
 		Integer result=0;
-		
 		try {
 			unconfirmIpService.updateUnconfirmIpById(unconfirmIp);
 		}catch(Exception e){
@@ -125,17 +132,23 @@ public class UnconfirmIpController {
 	//删除IP地址信息，普通管理员只能将Ip地址添加到待审核表中，原ip表并没有删除
 	@RequestMapping("/toDelete")
 	@ResponseBody
-	public Map<String, Object> deleteUnconfirmIp(int page,int limit,Integer id,UnconfirmIp unconfirmIp) {
+	public Map<String, Object> deleteUnconfirmIp(int page,int limit,Integer id,UnconfirmIp unconfirmIp,HttpSession session) {
 		UnconfirmIp unconfirm=unconfirmIpService.getUnconfirmIpById(id);
 		Ipform ipform=ipService.getIpformByIpAddress(unconfirm.getIpAddress());
 		ipform.setApprovalStatus(0);
 		unconfirmIpService.deleteUnconfirmIpById(id);
 		ipService.updateIpById(ipform);
 		
-		return unconfirmIpService.getAll(page,limit,unconfirmIp);
+		return unconfirmIpService.getAll(page,limit,unconfirmIp,session);
 	}
 	
-	
+	//删除需要审核添加的新IP地址
+	@RequestMapping("/toDeleteAdd")
+	@ResponseBody
+	public Map<String, Object> deleteAddUnconfirmIp(int page,int limit,Integer id,UnconfirmIp unconfirmIp,HttpSession session) {
+		unconfirmIpService.deleteUnconfirmIpById(id);
+		return unconfirmIpService.getAll(page,limit,unconfirmIp,session);
+	}
 	
 	//列表内容导出到excel中
 	
@@ -203,7 +216,7 @@ public class UnconfirmIpController {
 			row.createCell(21).setCellValue(list.get(i).getIpInputrate());
 			row.createCell(22).setCellValue(list.get(i).getIpTerminalnumber());
 		}
-		ExcelUtil.write("IP地址分配表（专线业务部分）",workbook,response);
+		ExportExcelUtil.write("IP地址分配表（专线业务部分）",workbook,response);
 	}
 	
 }

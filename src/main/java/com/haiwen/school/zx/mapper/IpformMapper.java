@@ -24,8 +24,6 @@ public interface IpformMapper {
     
     Ipform selectByIpAddress(String record);
 
-    //List<Ipform> getAll();
-   // Ipform checkA(Ipform ipform);
    List<Ipform> getAll(Map<String,Object> map);
     
   

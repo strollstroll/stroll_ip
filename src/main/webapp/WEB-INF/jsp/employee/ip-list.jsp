@@ -106,7 +106,7 @@
                  {field:'ipInputrate',width: 86,title:'下行速率'},
                  {field:'ipTerminalnumber',width: 100,title:'对应终端数'},
                  /* {field:'opt',width: 86,title:'操作',toolbar:'#toolbar'} */ 
-                 {field:'opt',width: 160,title:'操作',toolbar:'#ipbar',fixed: 'right'}
+                 {field:'opt',width: 170,title:'操作',toolbar:'#ipbar',fixed: 'right'}
             ]],
             id:'ipTable'
             ,page:true
