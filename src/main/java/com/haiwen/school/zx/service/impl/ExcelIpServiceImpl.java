@@ -61,52 +61,52 @@ private ExcelIpMapper excelIpMapper;
             ExcelIp j = null;
         	
 			try {
-				j = excelIpMapper.selectByPrimaryKey(Integer.valueOf(String.valueOf(lo.get(0))));
+				j = excelIpMapper.selectByIpAddress(String.valueOf(lo.get(2)));
+
+			  if(lo.get(0)!=""){vo.setIpStatus(String.valueOf(lo.get(0)));}
+		      if(lo.get(1)!=""){vo.setIpRemarks(String.valueOf(lo.get(1)));}
+		      if(lo.get(2)!=""){vo.setIpAddress(String.valueOf(lo.get(2)));}
+		      if(lo.get(3)!=""){vo.setIpSubnetmask(String.valueOf(lo.get(3)));}
+		      if(lo.get(4)!=""){vo.setIpAddressnumber(Integer.valueOf(String.valueOf(lo.get(4))));}
+		      if(lo.get(5)!=""){vo.setIpUsetime(Date.valueOf(String.valueOf(lo.get(5))));}
+		      if(lo.get(6)!=""){vo.setIpUsername(String.valueOf(lo.get(6)));}
+		      if(lo.get(7)!=""){vo.setIpVlan(String.valueOf(lo.get(7)));}
+		      if(lo.get(8)!=""){vo.setIpConnectingdevice(String.valueOf(lo.get(8)));}
+		      if(lo.get(9)!=""){vo.setIpPort(String.valueOf(lo.get(9)));}
+		      if(lo.get(10)!=""){vo.setIpRate(String.valueOf(lo.get(10)));}
+		      if(lo.get(11)!=""){vo.setIpAttribution(String.valueOf(lo.get(11)));}
+		      if(lo.get(12)!=""){vo.setIpBroadbandacceptancenumber(String.valueOf(lo.get(12)));}
+		      if(lo.get(13)!=""){vo.setIpSnnumber(Integer.valueOf(String.valueOf(lo.get(13))));}
+		      if(lo.get(14)!=""){vo.setIpOltaddress(String.valueOf(lo.get(14)));}
+		      if(lo.get(15)!=""){vo.setIpIomusername(String.valueOf(lo.get(15)));}
+		      if(lo.get(16)!=""){vo.setIpInstalledaddress(String.valueOf(lo.get(16)));}
+		      if(lo.get(17)!=""){vo.setIpType(String.valueOf(lo.get(17)));}
+		      if(lo.get(18)!=""){vo.setIpWotvbssremarks(String.valueOf(lo.get(18)));}
+		      if(lo.get(19)!=""){vo.setIpOutputrate(Integer.valueOf(String.valueOf(lo.get(19))));}
+		      if(lo.get(20)!=""){vo.setIpInputrate(Integer.valueOf(String.valueOf(lo.get(20))));}
+		      if(lo.get(21)!=""){vo.setIpTerminalnumber(Integer.valueOf(String.valueOf(lo.get(21))));}
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
-				System.out.println("没有新增");
+				return "excel数据请按照格式填写！";
 			}
-			System.out.println("------------------------------------------------------");   
-			vo.setIpStatus(String.valueOf(lo.get(0)));System.out.println(0);
-			vo.setIpRemarks(String.valueOf(lo.get(1)));System.out.println(1);
-			vo.setIpAddress(String.valueOf(lo.get(2)));System.out.println(2);
-			vo.setIpSubnetmask(String.valueOf(lo.get(3)));System.out.println(3);
-			vo.setIpAddressnumber(Integer.valueOf(String.valueOf(lo.get(4))));System.out.println(4);
-			vo.setIpUsetime(Date.valueOf(String.valueOf(lo.get(5))));System.out.println(5);
-			vo.setIpUsername(String.valueOf(lo.get(6)));System.out.println(6);
-			vo.setIpVlan(String.valueOf(lo.get(7)));System.out.println(7);
-			vo.setIpConnectingdevice(String.valueOf(lo.get(8)));System.out.println(8);
-			vo.setIpPort(String.valueOf(lo.get(9)));System.out.println(9);
-			vo.setIpRate(String.valueOf(lo.get(10)));System.out.println(10);
-			vo.setIpAttribution(String.valueOf(lo.get(11)));System.out.println(11);
-			vo.setIpBroadbandacceptancenumber(String.valueOf(lo.get(12)));System.out.println(12);
-			vo.setIpSnnumber(Integer.valueOf(String.valueOf(lo.get(13))));System.out.println(13);
-			vo.setIpOltaddress(String.valueOf(lo.get(14)));System.out.println(14);
-			vo.setIpIomusername(String.valueOf(lo.get(15)));System.out.println(15);
-			vo.setIpInstalledaddress(String.valueOf(lo.get(16)));System.out.println(16);
-			vo.setIpType(String.valueOf(lo.get(17)));System.out.println(17);
-			vo.setIpWotvbssremarks(String.valueOf(lo.get(18)));System.out.println(18);
-			vo.setIpOutputrate(Integer.valueOf(String.valueOf(lo.get(19))));System.out.println(19);
-			vo.setIpInputrate(Integer.valueOf(String.valueOf(lo.get(20))));System.out.println(20);
-			vo.setIpTerminalnumber(Integer.valueOf(String.valueOf(lo.get(21))));System.out.println(21);
 			if(j == null)
 			{
-				excelIpMapper.insert(vo);
+				excelIpMapper.insertSelective(vo);
 			}
 			else
 			{
-				excelIpMapper.updateByPrimaryKey(vo);
+				return "新导入的excel数据与下面预览表内数据重复！请检查后再提交。。。";
 			}
         }   
         return "文件导入成功！";
 	}
-	public void addIp(ExcelIp excelIp) {
+	public void addExcelIp(ExcelIp excelIp) {
 		// TODO Auto-generated method stub
 		
 	}
 	public List<ExcelIp> getAllExcelIp() {
 		// TODO Auto-generated method stub
-		return null;
+		return excelIpMapper.getAll(null);
 	}
 	public Map<String, Object> getAll(int page, int limit, ExcelIp excelIp) {
 		Map<String,Object> ipMap=new HashMap<String,Object>();
@@ -134,27 +134,25 @@ private ExcelIpMapper excelIpMapper;
         return map;
 	}
 	public ExcelIp getExcelIpById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		return excelIpMapper.selectByPrimaryKey(id);
 	}
 	public ExcelIp getExcelIpByIpAddress(String address) {
-		// TODO Auto-generated method stub
-		return null;
+		return excelIpMapper.selectByIpAddress(address);
 	}
-	public void updateIpById(ExcelIp excelIp) {
-		// TODO Auto-generated method stub
+	public void updateExcelIpById(ExcelIp excelIp) {
+		excelIpMapper.updateByPrimaryKeySelective(excelIp);
 		
 	}
-	public void updateIpByIpAddressSelective(ExcelIp excelIp) {
-		// TODO Auto-generated method stub
+	public void updateExcelIpByIpAddressSelective(ExcelIp excelIp) {
+		excelIpMapper.updateByIpAddressSelective(excelIp);
 		
 	}
-	public void deleteIpById(Integer id) {
-		// TODO Auto-generated method stub
+	public void deleteExcelIpById(Integer id) {
+		excelIpMapper.deleteByPrimaryKey(id);
 		
 	}
-	public void deleteIpByIpAddress(String address) {
-		// TODO Auto-generated method stub
+	public void deleteExcelIpByIpAddress(String address) {
+		excelIpMapper.deleteByIpAddress(address);
 		
 	}
 

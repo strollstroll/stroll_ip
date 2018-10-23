@@ -74,7 +74,7 @@
         var form=layui.form;
         t=table.render({
             elem:'#infoTable',
-            url:'<%=basePath%>/auditorIp/getUnconfirmIpList.do',
+            url:'<%=basePath%>/auditorIp/getUnconfirmIpList.do?timestamp='+(new Date()).valueOf(),
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},

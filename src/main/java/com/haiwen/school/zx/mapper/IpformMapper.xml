@@ -414,7 +414,9 @@
       <if test="ipAddress!=null and ipAddress!=''">
         and ip_address like concat('%',concat(#{ipAddress,jdbcType=VARCHAR},'%'))
       </if>
-      
+      <if test="ipVlan!=null and ipVlan!=''">
+        and ip_vlan like concat('%',concat(#{ipVlan,jdbcType=VARCHAR},'%'))
+      </if>
     </where>
   	</select>
   

@@ -23,10 +23,9 @@
     <script type="text/javascript" src="<%=basePath%>/X-admin/js/xadmin.js"></script>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-    
-    
-
-
+        <base href="<%=basePath%>">  
+    <script type="text/javascript" src="<%=basePath%>/static/jquery.min.js"></script>  
+    <script type="text/javascript" src="<%=basePath%>/static/jquery.form.js"></script>  
 </head>
 <body>
 
@@ -40,18 +39,28 @@
 <!--根据IP地址搜索，刷新IP信息列表，添加IP信息  -->
 <div class="x-body">
  	<div class="demoTable">
+ 		
 		<div class="layui-inline">
    			<input class="layui-input" name="ipAddress" placeholder="IP地址" id="ipTableReload" autocomplete="off">
+  		</div>
+  		<div class="layui-inline">
+   			<input class="layui-input" name="ipVlan" placeholder="Vlan号" id="ipTableReload1" autocomplete="off">
   		</div>
   		<!-- 根据IP搜索对应的IP地址信息 -->
   		<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
   		<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
    		 <button class="layui-btn layui-btn-normal" onclick="openWin('IP地址添加','<%=basePath%>/ip/addIp.do')">添加</button>
-  		 <button class="layui-btn layui-btn-normal" onclick="openWin('IP地址Excel导入','<%=basePath%>/excelIp/importExcel.do')">导入excel</button>
-  		<form id="excelForm" method="post">
-		 <button  id="excelForm" class="layui-btn layui-btn-normal" onclick="formSubmit()">导出excel</button>
-    	</form> 
+   		 
+  		 <button class="layui-btn layui-btn-warm" onclick="openWin('IP地址Excel导入','<%=basePath%>/excelIp/importExcel.do')">excel导入</button>
+  		 <form id="excelForm" method="post" action="">
+		 <button  id="outputExcel" class="layui-btn layui-btn-warm" onclick="formSubmit()">导出excel</button>
+		 <input type="button" id="ipMerge" class="layui-btn" value="IP合并"  name="ipMerge" >
+		 <input type="button" id="ipSplit" class="layui-btn" value="IP拆分"  name="ipSplit" >
+		 <input type="button" id="vlanChange" class="layui-btn" value="Vlan批量修改"  name="vlanChange" >
+       	 </form>
+    	
+    	
 	</div>
 	
     <table id="infoTable" lay-filter="userTable" >
@@ -85,13 +94,13 @@
 </script>
 <script>
     var t;
+    var table;
     layui.use(['table','layer','laydate','form'],function () {
-        var table=layui.table;
+        table=layui.table;
         var form=layui.form;
         t=table.render({
             elem:'#infoTable',
-            <%-- url:'<%=basePath%>/user/getList.do', --%>
-          	 url:'<%=basePath%>/ip/getIpformList.do',
+          	 url:'<%=basePath%>/ip/getIpformList.do?timestamp='+(new Date()).valueOf(),
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
@@ -124,32 +133,28 @@
             id:'ipTable'
             ,page:true
         });
-    /*   form.on('submit(search)',function (data) {
-            console.log(data);
-            t.reload({
-                where:data.field
-            });
-            return false;
-        }); */
-      //***********************************
 
-        //***********************************
         var $ = layui.$, active = {
         	    reload: function(){
         	      var ipTableReload = $('#ipTableReload');
+        	      var ipTableReload1 = $('#ipTableReload1');
+
         	     
         	      //执行重载
+        	      
         	      table.reload('ipTable', {
         	        page: {
         	          curr: 1 //重新从第 1 页开始
         	        }
         	        ,where: {
-        	          
-        	        	  ipAddress:ipTableReload.val()
-        	          
+        	        	ipAddress:ipTableReload.val(),
+        	        	ipVlan:ipTableReload1.val()
         	        }
         	      });
-        	    }
+        	      }
+        	    
+        
+
         	  };
         $('.x-body .demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');
@@ -245,10 +250,6 @@
  }
  
  //导出excel链接
- //=====================导出数据======================
-	 
-</script>
-<script type="text/javascript">
 function formSubmit(){
 	var postForm = document.getElementById("excelForm");
 	var panduan=confirm("确认导出数据?");
@@ -257,7 +258,85 @@ function formSubmit(){
 		postForm.submit();
 	}
 
-}
+} 
+ 
+ 
+/* Ip合并 */   
+$(document).ready(function(){ 
+   $('#ipMerge').click(function(){ //获取选中数据
+       var checkStatus = table.checkStatus('ipTable')
+       ,data = checkStatus.data;
+   	if(data.length==2){
+   		a1=data[0]['ipAddress'].split(".");
+   		b1=data[1]['ipAddress'].split(".");
+   		//alert(data[0]['ipAddress'].split(".",3));
+   		if(a1[0]==b1[0]&&a1[1]==b1[1]&&a1[2]==b1[2]&&parseInt(a1[3].split("-")[1])+1==data[1]['ipAddress'].split(".")[3].split("-",1)){
+   			con=confirm("确定IP："+data[0]['ipAddress']+"和"+data[1]['ipAddress']+"合并？");
+       		if(con==true){
+                   d1=data[0]['ipAddress'];
+                   d2=data[1]['ipAddress'];
+                   $('#excelForm').ajaxSubmit({    
+	                            url:'<%=basePath%>/ip/toIpMerge.do?address1='+d1+'&address2='+d2,
+	                            dataType: 'text',
+	                            success: resultMsg,  
+	                            error: errorMsg  
+	                        });   
+	                        function resultMsg(msg){  
+	                        	  
+	                            alert(msg);
+	                            window.location.reload(true);
+	                        }  
+	                        function errorMsg(){   
+	                            alert("服务器连接失败！请稍后重试");      
+	                        } 
+	                        
+       		}
+   		}else{
+   			layer.alert("需要合并的两条IP不是连续，无法合并。");	
+   		} 
+
+   	}
+   	else{
+   		layer.alert("请选择两条待合并的IP！！！");
+   	}      
+     });
+ //IP拆分   
+   $('#ipSplit').click(function(){
+		var checkStatus=table.checkStatus("ipTable");
+		var data=checkStatus.data;
+		if(data.length==1){
+			openWin("IP拆分",'<%=basePath%>/ip/toIpSplit.do?address='+data[0]['ipAddress']);
+
+  		 }else{
+  			 layer.alert("请选择一条待拆分的IP！");
+  		 }
+	});
+ //Vlan批量修改
+ $('#vlanChange').click(function(){
+	var checkStatus=table.checkStatus("ipTable");
+	var data=checkStatus.data;
+	if(data.length>0){
+	var str=data[0]['ipNumber']+",";
+	var ipVlan=data[0]['ipVlan'];
+	for(var i=1;i<data.length;i++){
+		str=str+data[i]['ipNumber']+",";
+	}
+		var con=confirm("确定对选中的"+data.length+"条IP地址Vlan号批量修改？");
+		if(con==true){
+		openWin("Vlan号批量修改",'<%=basePath%>/ip/toVlanChange.do?str='+str);
+		}
+	}
+	else{
+		layer.alert("请至少选择一条待修改的IP！");
+	}
+
+
+	 
+ });
+ 
+ 
+});
+
 </script>
 
 </html>

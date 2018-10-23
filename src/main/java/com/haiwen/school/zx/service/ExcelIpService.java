@@ -13,7 +13,7 @@ public interface ExcelIpService {
 	
 	
 	//添加ip
-	void addIp(ExcelIp excelIp);
+	void addExcelIp(ExcelIp excelIp);
 	
 	//获取所有IP
 	List<ExcelIp> getAllExcelIp();
@@ -25,12 +25,12 @@ public interface ExcelIpService {
 	ExcelIp getExcelIpByIpAddress(String address);
 	
 	//根据id修改IP地址信息
-	void updateIpById(ExcelIp excelIp);
+	void updateExcelIpById(ExcelIp excelIp);
 	
-	void updateIpByIpAddressSelective(ExcelIp excelIp);
+	void updateExcelIpByIpAddressSelective(ExcelIp excelIp);
 	
 	//根据id删除IP地址信息
-	void deleteIpById(Integer id);
+	void deleteExcelIpById(Integer id);
 	
-	void deleteIpByIpAddress(String address);
+	void deleteExcelIpByIpAddress(String address);
 }

@@ -22,7 +22,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <base href="<%=basePath%>">  
     <script type="text/javascript" src="<%=basePath%>/static/jquery.min.js"></script>  
     <script type="text/javascript" src="<%=basePath%>/static/jquery.form.js"></script>   
-    <script type="text/javascript">  
+    <script type="text/javascript">
+
             //ajax 方式上传文件操作  
              $(document).ready(function(){  
                 $('#btn').click(function(){  
@@ -30,18 +31,62 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         $('#form1').ajaxSubmit({    
                             url:'<%=basePath%>/excelIp/ajaxUpload.do',  
                             dataType: 'text',
-                            success: resutlMsg,  
+                            success: resultMsg,  
                             error: errorMsg  
                         });   
-                        function resutlMsg(msg){  
-                            alert(msg);     
-                            $("#upfile").val("");  
+                        function resultMsg(msg){  
+                        	  
+                            $("#upfile").val("");
+                            alert(msg);
                         }  
                         function errorMsg(){   
-                            alert("导入excel出错！");      
-                        }  
+                            alert("导入excel出错！ 可能IP地址重复或者导入的excel没有按照格式要求填写！");      
+                        } 
+                      
                     }  
-                });  
+                });
+                
+                /* 导入到正式表中（ipform） */
+                $('#importI').click(function(){  
+                	/* var postForm = document.getElementById("importId"); */
+                	var panduan=confirm("确认导入数据?");
+                	if(panduan==true){
+                        $('#form1').ajaxSubmit({    
+                            url:'<%=basePath%>/excelIp/importIpform.do',  
+                            dataType: 'text',
+                            success: resultMsg,  
+                            error: errorMsg  
+                        });   
+                        function resultMsg(msg){  
+                        	  
+                            alert(msg);
+                        }  
+                        function errorMsg(){   
+                            alert("服务器连接失败！请稍后重试。。。");      
+                        } 
+                	}
+                      
+                }); 
+                /* 导入到正式表中（ipform） */
+                $('#delAll').click(function(){  
+                	var panduan=confirm("确认删除下面所有数据?");
+                	if(panduan==true){
+                        $('#form1').ajaxSubmit({    
+                            url:'<%=basePath%>/excelIp/toDeleteAllExcelIp.do',  
+                            dataType: 'text',
+                            success: resultMsg,  
+                            error: errorMsg  
+                        });   
+                        function resultMsg(msg){  
+                        	  
+                            alert(msg);
+                        }  
+                        function errorMsg(){   
+                            alert("服务器连接失败！请稍后重试。。。");      
+                        } 
+                	}
+                      
+                }); 
              });  
                
              //JS校验form表单信息  
@@ -50,7 +95,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 var suffix = fileDir.substr(fileDir.lastIndexOf("."));  
                 if("" == fileDir){  
                     alert("选择需要导入的Excel文件！");  
-                    return false;  
+                   	return false;
                 }  
                 if(".xls" != suffix && ".xlsx" != suffix ){  
                     alert("选择Excel格式的文件导入！");  
@@ -61,42 +106,51 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </script>   
   </head>  
     
-  <body>  
+  <body>
+  <div>&nbsp;</div>  
   <!-- <div>1.通过简单的form表单提交方式，进行文件的上</br> 2.通过jquery.form.js插件提供的form表单一步提交功能 </div></br>   -->
-    <form method="POST"  enctype="multipart/form-data" id="form1" action="<%=basePath%>/excelIp/ajaxUpload.do">  
-        <table>  
-         <tr>  
-            <td align="center">上传文件: </td>  
-            <td align="center"> <input id="upfile" type="file" name="upfile"></td>  
  
-            <td><input type="submit" value="提交" onclick="checkData()"></td> 
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      		</td> 
-            <td><input type="button" value="ajax方式提交" id="btn" name="btn" ></td>  
-         </tr>  
-        </table> 
+    <form method="POST"  enctype="multipart/form-data" id="form1" action="">  
+        <table align="center" width="100%">  
+         <tr> 
+         	  
+            <td align="center">上传文件:
+             <input id="upfile" type="file" name="upfile">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="layui-btn layui-btn-small" type="button" value="上传文件" id="btn" name="btn" ></td>
 
-    </form>  
- 
- 
- 
- <div class="x-body">
- 	<div class="demoTable">
-		<div class="layui-inline">
-   			<input class="layui-input" name="ipAddress" placeholder="IP地址" id="ipTableReload" autocomplete="off">
-  		</div>
-  		<!-- 根据IP搜索对应的IP地址信息 -->
-  		<button class="layui-btn" data-type="reload" ><i class="layui-icon">&#xe615;</i></button>
-  		<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
+         </tr> 
+         <tr><td><hr></td></tr>
+         <tr>
+			<td align="center">Excel批量导入的数据，请刷新查看，确认无误后全部提交到正式数据库中</td>
+		</tr>
+         <tr>
+         	<td align="center">
+  			<a class="layui-btn layui-btn-small" style="line-height:2.4em" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+            <input type="button"  id="importI" class="layui-btn layui-btn-normal" value="全部导入">
+            <input type="button"  id="delAll" class="layui-btn layui-btn-warm" value="删除全部">
+            </td>
+         </tr> 
+        </table> 
+    </form> 
 
-	</div>
-	
+
+ <div class="x-body">
     <table id="infoTable" lay-filter="userTable" >
-	
     </table>	
-
 </div>
+
+<script type="text/html" id="ipbar">
+  	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('IP地址信息查看','<%=basePath%>/ip/toGetIpWatch.do?id={{d.ipNumber}}')">查看</a>
+	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/excelIp/toEdit.do?id={{d.ipId}}')">编辑</a>
+  	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+</script>
+<!-- 序号自增， -->
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
  <script>
     var t;
     layui.use(['table','layer','laydate','form'],function () {
@@ -104,12 +158,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         var form=layui.form;
         t=table.render({
             elem:'#infoTable',
-            <%-- url:'<%=basePath%>/user/getList.do', --%>
-          	 url:'<%=basePath%>/excelIp/getExcelIpList.do',
+          	 url:'<%=basePath%>/excelIp/getExcelIpList.do?timestamp='+(new Date()).valueOf(),
             cols:[[
-            	 {type:'checkbox'},
+            	 /* {type:'checkbox'}, */
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
-            	 {field:'ipNumber',width: 86,title:'序号'},
                  {field:'ipStatus',width: 86,title:'状态'},
                  {field:'ipRemarks',width: 150,title:'备注'},
                  {field:'ipAddress',width: 150,title:'IP地址'},
@@ -145,9 +197,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             });
             return false;
         }); */
-      //***********************************
 
-        //***********************************
         var $ = layui.$, active = {
         	    reload: function(){
         	      var ipTableReload = $('#ipTableReload');
@@ -164,7 +214,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	        }
         	      });
         	    }
+       
         	  };
+        
+        
         $('.x-body .demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
@@ -180,9 +233,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             	
             	   //向服务端发送删除指令
                 table.reload('ipTable',{
-              	  url:'<%=basePath%>/ip/toDelete.do'
+              	  url:'<%=basePath%>/excelIp/toDelete.do'
               	  ,where:{
-              		  id:data.ipNumber
+              		  id:data.ipId
               	  }
                 });
             	   
@@ -190,10 +243,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               layer.close(index);
            
             });
-          } 
+          }
         });
-        
-
         
     });
     function openWin(title,url,w,h){
@@ -258,20 +309,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    return fmt;
  }
  
- //导出excel链接
- //=====================导出数据======================
-	 
-</script>
-<script type="text/javascript">
-function formSubmit(){
-	var postForm = document.getElementById("excelForm");
-	var panduan=confirm("确认导出数据?");
-	if(panduan==true){
-		postForm.action = '<%=basePath%>/ip/exportExcel.do';
-		postForm.submit();
-	}
-
-}
+ 
 </script>
  
  

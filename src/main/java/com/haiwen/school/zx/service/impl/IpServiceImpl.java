@@ -35,6 +35,9 @@ private HistoryIpMapper historyIpMapper;
 			if(StringUtil.isNotEmpty(ipform.getIpAddress())) {
 				ipMap.put("ipAddress", ipform.getIpAddress());
 			}
+			if(StringUtil.isNotEmpty(ipform.getIpVlan())) {
+				ipMap.put("ipVlan", ipform.getIpVlan());
+			}
 
 	        PageHelper.startPage(page, limit);
 	        List<Ipform> ipList=ipformMapper.getAll(ipMap);

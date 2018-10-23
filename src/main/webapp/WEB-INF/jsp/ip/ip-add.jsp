@@ -200,9 +200,9 @@
           laydate.render({
               elem: '#date1'
             });
-          //输入信息正则校验
+           //输入信息正则校验
             form.verify({
-              remarks: function(value){
+/*               remarks: function(value){
             	  var pattern=/(备用|移机|停机){1}(19\d{2}|20\d{2}){1}(0[1-9]|1[0-2]){1}(0[1-9]|[12]\d|3[01])$/;
             	  var pattern1 = /^移机$/;
             	  var pattern2 = /^停机$/;
@@ -217,8 +217,8 @@
            		if(!pattern.test(value)){
            			return "请输入正确的IP地址";
            		}
-            }
-            ,subnetmask :function(value){
+            } 
+            , */subnetmask :function(value){
             	//if(value){return 0;}
             }
             ,addressnumber :function(value){
@@ -295,7 +295,10 @@
                               //关闭当前frame
                               parent.layer.close(index);
                           });
-                      }else{
+                      }else if(data==2){
+                    	  layer.alert('请不要重复提交！',{icon:5})
+                      }
+                      else{
                           layer.alert('更新失败！',{icon:5})
                       }
                   },

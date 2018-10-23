@@ -36,8 +36,8 @@
   <div class="layui-form-item">
     <label class="layui-form-label">序号</label>
     <div class="layui-input-block">
-      <input type="text" name="ipNumber" lay-verify="ipWatch" value="${ip.ipNumber}"  autocomplete="off" placeholder="请输入序号" class="layui-input">
-    </div>
+      <input type="text" name="ipId" lay-verify="ipWatch" value="${ip.ipId}" disabled="disabled" autocomplete="off" placeholder="请输入序号" class="layui-input">
+    </div> 
   	</div>
  	<div class="layui-form-item">
     <label class="layui-form-label">状态</label>
@@ -196,7 +196,7 @@
         form.on('submit(update)', function(data){
             console.log(data);
             $.ajax({
-                url:'<%=basePath%>/ip/doUpdate.do',
+                url:'<%=basePath%>/excelIp/doUpdate.do',
                 data:data.field,
                 method:'post',
                 success:function (data) {

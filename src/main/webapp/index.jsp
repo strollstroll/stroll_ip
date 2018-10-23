@@ -9,7 +9,11 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="X-admin/css/font.css">
     <link rel="stylesheet" href="X-admin/css/xadmin.css">
-    <script type="text/javascript" src="static/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="static/jquery-3.2.1.js"></script> 
+        	<!--IE8只能支持jQuery1.9-->
+	<!--[if IE 8]>
+	<script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.9.0/jquery.min.js"></script>
+	<![endif]-->
     <script src="X-admin/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="X-admin/js/xadmin.js"></script>
 

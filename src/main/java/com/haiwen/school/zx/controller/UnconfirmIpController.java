@@ -154,14 +154,10 @@ public class UnconfirmIpController {
 	
 	
 	/**
-	 * 描述：导出用户列表
-	 * @param response
-	 * @throws Exception
-	 * @author songfayuan
-	 * 2017年6月19日下午4:26:32
+	 * 描述：导出ip列表
 	 */
 	@RequestMapping("/exportExcel")
-	public void exportExcelIpList(HttpServletResponse response) throws Exception {
+	public void exportExcelIpList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		List<Ipform> list=this.ipService.getAllIpform();
 		Workbook workbook=new XSSFWorkbook();
 		Sheet sheet=workbook.createSheet();
@@ -216,7 +212,7 @@ public class UnconfirmIpController {
 			row.createCell(21).setCellValue(list.get(i).getIpInputrate());
 			row.createCell(22).setCellValue(list.get(i).getIpTerminalnumber());
 		}
-		ExportExcelUtil.write("IP地址分配表（专线业务部分）",workbook,response);
+		ExportExcelUtil.write("IP",workbook,request,response);
 	}
 	
 }

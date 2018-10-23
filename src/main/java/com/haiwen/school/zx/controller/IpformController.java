@@ -93,15 +93,17 @@ public class IpformController {
 	@ResponseBody
 	public Integer addIpform(Ipform ipform) {
 		Integer result=0;
+		if(ipService.getIpformByIpAddress(ipform.getIpAddress())!=null) {
+			return 2;
+		}
         try{
             ipService.addIp(ipform);
         }catch(Exception e){
             result = -1;
         }
         //添加到历史表中
-        ipService.getIpformByIpAddress(ipform.getIpAddress());
        HistoryIpAddUtil historyIpAddUtil=new HistoryIpAddUtil();
-       //由于新添加的字段ipNumber（序号）还没有生成是mysql自增生成的。需要从数据库获取。
+       //由于新添加的字段ipNumber（序号）还没有生成，是mysql自增生成的。需要从数据库获取。
        HistoryIp historyIp=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(ipform.getIpAddress()));
         historyIpMapper.insertSelective(historyIp);
         return result;
@@ -159,14 +161,12 @@ public class IpformController {
 	
 	
 	/**
-	 * 描述：导出用户列表
+	 * 描述：导出ip列表
 	 * @param response
 	 * @throws Exception
-	 * @author songfayuan
-	 * 2017年6月19日下午4:26:32
 	 */
 	@RequestMapping("/exportExcel")
-	public void exportExcelIpList(HttpServletResponse response) throws Exception {
+	public void exportExcelIpList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		List<Ipform> list=this.ipService.getAllIpform();
 		list.get(0).getApprovalStatus();
 		Workbook workbook=new XSSFWorkbook();
@@ -223,7 +223,115 @@ public class IpformController {
 			if(list.get(i).getIpTerminalnumber()==null){row.createCell(22).setCellValue("");}else{row.createCell(22).setCellValue(list.get(i).getIpTerminalnumber());}
 
 		}
-		ExportExcelUtil.write("IP地址分配表",workbook,response);
+		ExportExcelUtil.write("IP",workbook,request,response);
 	}
+	
+	@ResponseBody
+	@RequestMapping("/toIpMerge")
+	public String mergeIp(String address1,String address2,HttpServletRequest request) {
+		Ipform ipform1=ipService.getIpformByIpAddress(address1);
+		Ipform ipform2=ipService.getIpformByIpAddress(address2);
+		String[] arr1=ipform1.getIpAddress().split("\\.");
+		String[] arr2=(ipform2.getIpAddress()).split("\\.");
+		String[] arr3=arr1[3].split("\\-");
+		String[] arr4=arr2[3].split("\\-");
+		String mergeIp=arr1[0]+"."+arr1[1]+"."+arr1[2]+"."+arr3[0]+"-"+arr4[1];
+		Ipform mergeIpform=new Ipform();
+		mergeIpform.setIpStatus("备用");
+		mergeIpform.setIpAddress(mergeIp);
+		mergeIpform.setIpSubnetmask("255.255.255."+(255-ipform1.getIpAddressnumber()-ipform2.getIpAddressnumber()+1));
+		mergeIpform.setIpAddressnumber(ipform1.getIpAddressnumber()+ipform2.getIpAddressnumber());
+		ipService.deleteIpByIpAddress(address1);
+		ipService.deleteIpByIpAddress(address2);
+		ipService.addIp(mergeIpform);
+		
+        //添加到历史表中
+	       HistoryIpAddUtil historyIpAddUtil=new HistoryIpAddUtil();
+	       //由于新添加的字段ipNumber（序号）还没有生成，是mysql自增生成的。需要从数据库获取。
+	       HistoryIp historyIp=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(mergeIpform.getIpAddress()));
+	        historyIpMapper.insertSelective(historyIp);
+		return "IP合并完成："+mergeIpform.getIpAddress();
+	}
+	
+	//跳转到拆分页面，
+	@RequestMapping("/toIpSplit")
+	public String toIpSplit(String address,HttpServletRequest request) {
+		Ipform ipform=ipService.getIpformByIpAddress(address);
+		request.setAttribute("ip",ipform);
+		return "ip/ip-split";
+	}
+	
+	//跳转到拆分页面，
+	@ResponseBody
+	@RequestMapping("/doSplit")
+	public String doSplit(String address1,Integer num,HttpServletRequest request) {
+		Ipform ipform=ipService.getIpformByIpAddress(address1);
+		Ipform ipMerge1=new Ipform();
+		Ipform ipMerge2=new Ipform();
+		String address2=ipform.getIpAddress();
+		String[] temp1=address2.split("\\-");
+		String[] temp2=address2.split("\\.");
+		String[] temp3=temp2[3].split("\\-");
+		String address3=temp1[0]+'-'+(Integer.valueOf(temp3[0])+num-1);
+		String address4=temp2[0]+"."+temp2[1]+'.'+temp2[2]+'.'+(Integer.valueOf(temp3[0])+num)+'-'+temp3[1];
+		int totalNum=(Integer.valueOf(temp3[1]))-(Integer.valueOf(temp3[0]));
+		ipMerge1.setIpStatus("备用");
+		ipMerge1.setIpAddress(address3);
+		ipMerge1.setIpSubnetmask("255.255.255."+(255-num+1));
+		ipMerge1.setIpAddressnumber(num);
+		
+		ipMerge2.setIpStatus("备用");
+		ipMerge2.setIpAddress(address4);
+		ipMerge2.setIpSubnetmask("255.255.255."+(255+num-totalNum+1));
+		ipMerge2.setIpAddressnumber(totalNum-num+1);
+		ipService.addIp(ipMerge1);
+		ipService.addIp(ipMerge2);
+		ipService.deleteIpByIpAddress(address1);
+		
+        //添加到历史表中
+	       HistoryIpAddUtil historyIpAddUtil=new HistoryIpAddUtil();
+	       //由于新添加的字段ipNumber（序号）还没有生成，是mysql自增生成的。需要从数据库获取。
+	       HistoryIp historyIp=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(ipMerge1.getIpAddress()));
+	        historyIpMapper.insertSelective(historyIp);
+		   HistoryIp historyIp1=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(ipMerge2.getIpAddress()));
+		   historyIpMapper.insertSelective(historyIp1);
+		return "拆分成功.";
+	}
+	
+	//Vlan号批量修改页面跳转
+	@RequestMapping("/toVlanChange")
+	public String toVlanChange(String str,HttpServletRequest request) {
+		request.setAttribute("str", str);
+		//修改完后要将修改了的信息输入到历史表中
+		
+		return "ip/ip-Vlan";
+	}
+	
+	//Vlan批量修改
+	@ResponseBody
+	@RequestMapping("/doVlanChange")
+	public Integer doVlanChange(String ipNumber,String ipVlan) {
+		String[] str1=ipNumber.split("\\,");
+		Integer result=0;
+        //添加到历史表中
+	       HistoryIpAddUtil historyIpAddUtil=new HistoryIpAddUtil();
+		try {
+			Ipform ipform=new Ipform();
+		for(int i=0;i<str1.length;i++) {
+			ipform=ipService.getIpformById(Integer.valueOf(str1[i]));
+			ipform.setIpVlan(ipVlan);
+			ipService.updateIpById(ipform);
+
+		     //由于新添加的字段ipNumber（序号）还没有生成，是mysql自增生成的。需要从数据库获取。
+		     HistoryIp historyIp=historyIpAddUtil.historyIpAdd(ipService.getIpformByIpAddress(ipform.getIpAddress()));
+		     historyIpMapper.insertSelective(historyIp);
+		}
+		
+		}catch(Exception e){
+			result=-1;
+		}
+		return result;
+	}
+	
 	
 }
