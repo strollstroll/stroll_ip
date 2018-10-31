@@ -37,8 +37,6 @@
                 <dd><a href="<%=basePath%>/user/exit.do">退出</a></dd>
             </dl>
         </li>
-        <!-- ********这个前台页面展示没有用处********哈哈哈 -->
-        <!-- <li class="layui-nav-item to-index"><a href="/">前台首页</a></li> -->
     </ul>
 
 </div>
@@ -75,9 +73,9 @@
                         </a>
                     </li >
                     <li>
-                        <a _href="<%=basePath%>/ip/toIpformEdit.do">
+                        <a _href="<%=basePath%>/log/toOperationLogList.do">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>IP地址操作记录</cite>
+                            <cite>操作日志</cite>
                         </a>
                     </li >
                 </ul>
@@ -114,7 +112,7 @@
         var layer=layui.layer;
         if("${msg}"!=""){
             layer.msg('${msg}',{icon:2,time:1500},function () {
-                location.href="/school/"
+                location.href="/ip/"
             })   }
     })
 </script>

@@ -108,7 +108,7 @@
         var layer=layui.layer;
         if("${msg}"!=""){
             layer.msg('${msg}',{icon:2,time:1500},function () {
-                location.href="/school/"
+                location.href="/ip/"
             })   }
     })
 </script>

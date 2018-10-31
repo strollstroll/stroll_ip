@@ -143,13 +143,13 @@
             	
             	   //向服务端发送删除指令
                 table.reload('ipTable',{
-              	  url:'<%=basePath%>/employeeIp/toDelete.do'
+              	  url:'<%=basePath%>/employeeIp/toDelete.do?timestamp='+(new Date()).valueOf()
               	  ,where:{
               		  id:data.ipNumber
               	  }
                 });
             	   
-             // obj.del(); //删除对应行（tr）的DOM结构
+              //obj.del(); //删除对应行（tr）的DOM结构
               layer.close(index);
            
             });

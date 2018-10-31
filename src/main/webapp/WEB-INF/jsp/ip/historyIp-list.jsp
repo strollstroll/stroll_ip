@@ -77,6 +77,7 @@
             cols:[[
             	 {type:'checkbox'},
             	 {field:'zizeng', width:80, title: '排序',templet:'#zizeng'},
+            	 {field:'historyTime',width: 160,title:'历史时间'},
             	 {field:'ipNumber',width: 86,title:'序号'},
                  {field:'ipStatus',width: 86,title:'状态'},
                  {field:'ipRemarks',width: 150,title:'备注'},
@@ -100,7 +101,6 @@
                  {field:'ipOutputrate',width: 86,title:'上行速率'},
                  {field:'ipInputrate',width: 86,title:'下行速率'},
                  {field:'ipTerminalnumber',width: 100,title:'对应终端数'},
-                 {field:'historyTime',width: 160,title:'历史时间'},
                  /* {field:'opt',width: 86,title:'操作',toolbar:'#toolbar'} */ 
                  {field:'opt',width: 80,title:'操作',toolbar:'#ipbar',fixed: 'right'}
             ]],

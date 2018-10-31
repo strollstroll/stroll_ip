@@ -49,8 +49,11 @@
         <select name="ipStatus" id="ipSta">
           <option value="">请选择状态</option>
           <option value="备用" selected="">备用</option>
+          <option value="正常">正常</option>
+          <option value="自用">自用</option>
           <option value="移机">移机</option>
           <option value="停机">停机</option>
+          <option value="拆机">拆机</option>
         </select>
       </div>
     </div>
@@ -63,7 +66,7 @@
   <div class="layui-form-item">
       <label class="layui-form-label">IP地址</label>
       <div class="layui-input-block">
-        <input type="text" name="ipAddress" lay-verify="address" autocomplete="off" placeholder="请输入IP地址" class="layui-input">
+        <input type="text" name="ipAddress" id="ipAddr" lay-verify="address" autocomplete="off" placeholder="请输入IP地址" class="layui-input">
       </div>
     </div>
   <div class="layui-form-item">
@@ -202,7 +205,7 @@
             });
            //输入信息正则校验
             form.verify({
-/*               remarks: function(value){
+              /*  remarks: function(value){
             	  var pattern=/(备用|移机|停机){1}(19\d{2}|20\d{2}){1}(0[1-9]|1[0-2]){1}(0[1-9]|[12]\d|3[01])$/;
             	  var pattern1 = /^移机$/;
             	  var pattern2 = /^停机$/;
@@ -211,69 +214,48 @@
                 	  return "请输入状态+时间，例如：\'停机\'或者\'停机20180828\'";
                   }
               }
-            //,pass: [/(.+){6,12}$/, '密码必须6到12位']    另一种方式
-            ,address:function(value){
-            	var pattern=/(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.){3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))/;
+            ,*/address:function(value){
+            	var pattern= /^(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\-(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/;
            		if(!pattern.test(value)){
            			return "请输入正确的IP地址";
+           		}else if(parseInt(value.split(".")[3].split("-")[0])>parseInt(value.split("-")[1])){
+           			return "地址区间有问题！";
            		}
             } 
-            , */subnetmask :function(value){
-            	//if(value){return 0;}
+            ,subnetmask :function(value){
+            	var addr=document.getElementById("ipAddr").value;
+            	var num=parseInt(addr.split("-")[1])-parseInt(addr.split(".")[3].split("-")[0]);
+            	var num1=255-num;
+            	pattern="255.255.255."+num1;
+            	if(pattern!=value){
+            		return "请输入："+pattern;
+            	}
             }
             ,addressnumber :function(value){
-            	//if(value){return 0;}
+            	var addr=document.getElementById("ipAddr").value;
+            	var num=parseInt(addr.split("-")[1])-parseInt(addr.split(".")[3].split("-")[0])+1;
+            	if(num!=value){
+            		return "请输入："+num;
+            	}
             }
-            ,usetime :function(value){
-            	//if(value){return 0;}
-            }
-            ,usetime :function(value){
-            	//if(value){return 0;}
-            }
-            ,vlan :function(value){
-            	//if(value){return 0;}
-            }
-            ,connectingdevice :function(value){
-            	//if(value){return 0;}
-            }
-            ,port :function(value){
-            	//if(value){return 0;}
-            }
-            ,rate :function(value){
-            	//if(value){return 0;}
-            }
-            ,attribution :function(value){
-            	//if(value){return 0;}
-            }
-            ,broadbandacceptancenuber :function(value){
-            	//if(value){return 0;}
-            }
-            ,snnumber :function(value){
-            	//if(value){return 0;}
-            }
-            ,oltaddress :function(value){
-            	//if(value){return 0;}
-            }
-            ,iomusername :function(value){
-            	//if(value){return 0;}
-            }
-            ,installedaddress :function(value){
-            	//if(value){return 0;}
-            }
-            ,type :function(value){
-            	//if(value){return 0;}
-            }
-            ,wotvbssremarks :function(value){
-            	//if(value){return 0;}
-            }
+            
             ,outputrate :function(value){
-            	//if(value){return 0;}
+            	var pattern=/^\d*$/;
+            	if(!pattern.test(value)||value.length>10){
+            		return "请输入合理数字！";
+            	}
             }
             ,inputrate :function(value){
-            	//if(value){return 0;}
+            	var pattern=/^\d*$/;
+            	if(!pattern.test(value)||value.length>10){
+            		return "请输入合理数字！";
+            	}
             }
             ,terminalnumber :function(value){
-            	//if(value){return 0;}
+            	var pattern=/^\d*$/;
+            	if(!pattern.test(value)||value.length>10){
+            		return "请输入合理数字！";
+            	}
             }
             
   

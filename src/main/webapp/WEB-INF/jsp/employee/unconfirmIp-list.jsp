@@ -50,15 +50,15 @@
 
 </div>
 <script type="text/html" id="ipbar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.ipNumber}}')">查看</a>
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.unconfirmId}}')">查看</a>
 
 	{{#  if(d.unconfirmStatus =="删除待审核"||d.unconfirmStatus =="审核未通过(删除操作)"){ }}
   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消审核</a>
     {{#  } else if(d.unconfirmStatus =="添加待审核"||d.unconfirmStatus =="审核未通过(添加操作)"){ }}
-	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.ipNumber}}')">再次编辑</a>
+	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.unconfirmId}}')">再次编辑</a>
   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delAdd">取消审核</a>
  	{{#  } else { }}
-	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.ipNumber}}')">再次编辑</a>
+	<a class="layui-btn layui-btn-xs" lay-event="edit" onclick="openWin('IP地址信息编辑','<%=basePath%>/unconfirmIp/toEdit.do?id={{d.unconfirmId}}')">再次编辑</a>
   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">取消审核</a>
     {{#  } }}
 </script>
@@ -146,7 +146,7 @@
                 table.reload('ipTable',{
               	  url:'<%=basePath%>/unconfirmIp/toDeleteAdd.do'
               	  ,where:{
-              		  id:data.ipNumber
+              		  id:data.unconfirmId
               	  }
                 });
            	   
@@ -162,7 +162,7 @@
                table.reload('ipTable',{
              	  url:'<%=basePath%>/unconfirmIp/toDelete.do'
              	  ,where:{
-             		  id:data.ipNumber
+             		  id:data.unconfirmId
              	  }
                });
            	   

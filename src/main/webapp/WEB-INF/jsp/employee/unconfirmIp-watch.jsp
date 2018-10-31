@@ -32,6 +32,12 @@
 
    <body>
     <div class="x-body">
+    <div class="layui-form-item">
+    <label class="layui-form-label">序号</label>
+    <div class="layui-input-block">
+      <input type="text" name="ipNumber" lay-verify="ipWatch" value="${ip.ipNumber}" disabled="disabled" value="${ip.ipStatus}" autocomplete="off" placeholder="待审核，还未分配序号" class="layui-input">
+    </div>
+  	</div>
  	<div class="layui-form-item">
     <label class="layui-form-label">状态</label>
     <div class="layui-input-block">

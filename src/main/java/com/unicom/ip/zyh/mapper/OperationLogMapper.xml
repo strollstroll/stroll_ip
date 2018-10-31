@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.unicom.ip.zyh.mapper.OperationLogMapper" >
+  <resultMap id="BaseResultMap" type="com.unicom.ip.zyh.beans.OperationLog" >
+    <id column="operation_id" property="operationId" jdbcType="INTEGER" />
+    <result column="operation_user" property="operationUser" jdbcType="VARCHAR" />
+    <result column="operation_time" property="operationTime" jdbcType="VARCHAR" />
+    <result column="operation_type" property="operationType" jdbcType="VARCHAR" />
+    <result column="operation_content" property="operationContent" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    operation_id, operation_user, operation_time,operation_type, operation_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from operationlog
+    where operation_id = #{operationId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from operationlog
+    where operation_id = #{operationId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.unicom.ip.zyh.beans.OperationLog" >
+    insert into operationlog (operation_id,operation_user,  operation_time, operation_type,
+      operation_content
+      )
+    values (#{operationId,jdbcType=INTEGER}, #{operationUser,jdbcType=VARCHAR}, #{operationTime,jdbcType=VARCHAR}, 
+      #{operationType,jdbcType=VARCHAR},#{operationContent,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.unicom.ip.zyh.beans.OperationLog" >
+    insert into operationlog
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="operationId != null" >
+        operation_id,
+      </if>
+      <if test="operationUser != null" >
+        operation_user,
+      </if>
+      <if test="operationTime != null" >
+        operation_time,
+      </if>
+      <if test="operationType != null" >
+        operation_type,
+      </if>
+      <if test="operationContent != null" >
+        operation_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="operationId != null" >
+        #{operationId,jdbcType=INTEGER},
+      </if>
+      <if test="operationUser != null" >
+        #{operationUser,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null" >
+        #{operationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null" >
+        #{operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="operationContent != null" >
+        #{operationContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.unicom.ip.zyh.beans.OperationLog" >
+    update operationlog
+    <set >
+      <if test="operationUser != null" >
+        operation_user = #{operationUser,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null" >
+        operation_time = #{operationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null" >
+        operation_type = #{operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="operationContent != null" >
+        operation_content = #{operationContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where operation_id = #{operationId,jdbcType=INTEGER}
+  </update>
+   
+  <update id="updateByPrimaryKey" parameterType="com.unicom.ip.zyh.beans.OperationLog" >
+    update operationlog
+    set operation_user = #{operationUser,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=VARCHAR},
+      operation_type = #{operationType,jdbcType=VARCHAR},
+      operation_content = #{operationContent,jdbcType=VARCHAR}
+    where operation_id = #{operationId,jdbcType=INTEGER}
+  </update>
+  <!-- 查询所有数据 -->
+ 
+    <select id="getAll" resultMap="BaseResultMap" parameterType="java.util.Map">
+     select 
+     operation_id, operation_user, operation_time,operation_type, operation_content
+      from operationlog
+   <where>
+      <if test="operationUser!=null and operationUser!=''">
+        and operation_user like concat('%',concat(#{operationUser,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="operationTime!=null and operationTime!=''">
+        and operation_time like concat('%',concat(#{operationTime,jdbcType=VARCHAR},'%'))
+      </if>
+    </where>
+    </select>
+
+</mapper>

@@ -57,7 +57,7 @@
   <div class="layui-form-item">
       <label class="layui-form-label">IP地址</label>
       <div class="layui-input-block">
-        <input type="text" name="ipAddress" lay-verify="address" autocomplete="off" placeholder="请输入IP地址" class="layui-input">
+        <input type="text" name="ipAddress" id="ipAddr" lay-verify="address" autocomplete="off" placeholder="请输入IP地址" class="layui-input">
       </div>
     </div>
   <div class="layui-form-item">
@@ -81,7 +81,7 @@
   <div class="layui-form-item">
       <label class="layui-form-label">用户名称</label>
       <div class="layui-input-block">
-        <input type="text" name="ipUsername" lay-verify="usetime" autocomplete="off" placeholder="请输入用户名称" class="layui-input">
+        <input type="text" name="ipUsername" lay-verify="usename" autocomplete="off" placeholder="请输入用户名称" class="layui-input">
       </div>
     </div>
   <div class="layui-form-item">
@@ -197,80 +197,50 @@
             });
           //输入信息正则校验
             form.verify({
-              remarks: function(value){
-            	  var pattern=/(备用|移机|停机){1}(19\d{2}|20\d{2}){1}(0[1-9]|1[0-2]){1}(0[1-9]|[12]\d|3[01])$/;
-            	  var pattern1 = /^移机$/;
-            	  var pattern2 = /^停机$/;
-            	  var pattern3 = /^备用$/;
-         		  if(!pattern.test(value) && !pattern1.test(value) && !pattern2.test(value) && !pattern3.test(value)){
-                	  return "请输入状态+时间，例如：\'停机\'或者\'停机20180828\'";
-                  }
-              }
-            //,pass: [/(.+){6,12}$/, '密码必须6到12位']    另一种方式
-            ,address:function(value){
-            	var pattern=/(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.){3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))/;
-           		if(!pattern.test(value)){
-           			return "请输入正确的IP地址";
-           		}
-            }
-            ,subnetmask :function(value){
-            	//if(value){return 0;}
-            }
-            ,addressnumber :function(value){
-            	//if(value){return 0;}
-            }
-            ,usetime :function(value){
-            	//if(value){return 0;}
-            }
-            ,usetime :function(value){
-            	//if(value){return 0;}
-            }
-            ,vlan :function(value){
-            	//if(value){return 0;}
-            }
-            ,connectingdevice :function(value){
-            	//if(value){return 0;}
-            }
-            ,port :function(value){
-            	//if(value){return 0;}
-            }
-            ,rate :function(value){
-            	//if(value){return 0;}
-            }
-            ,attribution :function(value){
-            	//if(value){return 0;}
-            }
-            ,broadbandacceptancenuber :function(value){
-            	//if(value){return 0;}
-            }
-            ,snnumber :function(value){
-            	//if(value){return 0;}
-            }
-            ,oltaddress :function(value){
-            	//if(value){return 0;}
-            }
-            ,iomusername :function(value){
-            	//if(value){return 0;}
-            }
-            ,installedaddress :function(value){
-            	//if(value){return 0;}
-            }
-            ,type :function(value){
-            	//if(value){return 0;}
-            }
-            ,wotvbssremarks :function(value){
-            	//if(value){return 0;}
-            }
-            ,outputrate :function(value){
-            	//if(value){return 0;}
-            }
-            ,inputrate :function(value){
-            	//if(value){return 0;}
-            }
-            ,terminalnumber :function(value){
-            	//if(value){return 0;}
-            }
-            
+            	address:function(value){
+                	var pattern= /^(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\-(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/;
+               		if(!pattern.test(value)){
+               			return "请输入正确的IP地址";
+               		}else if(parseInt(value.split(".")[3].split("-")[0])>parseInt(value.split("-")[1])){
+               			return "地址区间有问题！";
+               		}
+                } 
+                ,subnetmask :function(value){
+                	var addr=document.getElementById("ipAddr").value;
+                	var num=parseInt(addr.split("-")[1])-parseInt(addr.split(".")[3].split("-")[0]);
+                	var num1=255-num;
+                	pattern="255.255.255."+num1;
+                	if(pattern!=value){
+                		return "请输入："+pattern;
+                	}
+                }
+                ,addressnumber :function(value){
+                	var addr=document.getElementById("ipAddr").value;
+                	var num=parseInt(addr.split("-")[1])-parseInt(addr.split(".")[3].split("-")[0])+1;
+                	if(num!=value){
+                		return "请输入："+num;
+                	}
+                }
+                
+                ,outputrate :function(value){
+                	var pattern=/^\d*$/;
+                	if(!pattern.test(value)||value.length>10){
+                		return "请输入合理数字！";
+                	}
+                }
+                ,inputrate :function(value){
+                	var pattern=/^\d*$/;
+                	if(!pattern.test(value)||value.length>10){
+                		return "请输入合理数字！";
+                	}
+                }
+                ,terminalnumber :function(value){
+                	var pattern=/^\d*$/;
+                	if(!pattern.test(value)||value.length>10){
+                		return "请输入合理数字！";
+                	}
+                }
+                
   
           });
   
@@ -290,6 +260,8 @@
                               //关闭当前frame
                               parent.layer.close(index);
                           });
+                      }else if(data==-2){
+                          layer.alert('请不要重复提交!',{icon:5})
                       }else{
                           layer.alert('添加审核失败！',{icon:5})
                       }

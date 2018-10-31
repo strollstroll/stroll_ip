@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <!--扫描包-->
-    <context:component-scan base-package="com.haiwen.school.zx.controller" />
+    <context:component-scan base-package="com.unicom.ip.zyh.controller" />
     <!--避免IE执行ajax时下载JSON文件-->
     <bean id="fastJsonHttpMessageConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
         <property name="supportedMediaTypes">

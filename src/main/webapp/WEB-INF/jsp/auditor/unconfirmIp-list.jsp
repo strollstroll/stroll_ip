@@ -50,7 +50,7 @@
 
 </div>
 <script type="text/html" id="ipbar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.ipNumber}}')">查看</a>
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" onclick="openWin('待审核IP地址信息','<%=basePath%>/unconfirmIp/toGetUnconfirmIpWatch.do?id={{d.unconfirmId}}')">查看</a>
 
 	{{#  if(d.unconfirmStatus =="删除待审核"){ }}
   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="agreeDel">通过删除</a>
@@ -146,7 +146,7 @@
                 table.reload('ipTable',{
               	  url:'<%=basePath%>/auditorIp/toAgreeDelete.do'
               	  ,where:{
-              		  id:data.ipNumber
+              		  id:data.unconfirmId
               	  }
                 });
             	   
@@ -160,7 +160,7 @@
                 table.reload('ipTable',{
                   url:'<%=basePath%>/auditorIp/toCancelDelete.do'
                   ,where:{
-                    id:data.ipNumber
+                    id:data.unconfirmId
                   }
                 });
                  
@@ -174,7 +174,7 @@
                 table.reload('ipTable',{
                   url:'<%=basePath%>/auditorIp/toAgreeAdd.do'
                   ,where:{
-                    id:data.ipNumber
+                    id:data.unconfirmId
                   }
                 });
                  
@@ -188,7 +188,7 @@
                 table.reload('ipTable',{
                   url:'<%=basePath%>/auditorIp/toCancelAdd.do'
                   ,where:{
-                    id:data.ipNumber
+                    id:data.unconfirmId
                   }
                 });
                  
@@ -202,7 +202,7 @@
                 table.reload('ipTable',{
                   url:'<%=basePath%>/auditorIp/toAgreeUpdate.do'
                   ,where:{
-                    id:data.ipNumber
+                    id:data.unconfirmId
                   }
                 });
                  
@@ -216,7 +216,7 @@
                 table.reload('ipTable',{
                   url:'<%=basePath%>/auditorIp/toCancelUpdate.do'
                   ,where:{
-                    id:data.ipNumber
+                    id:data.unconfirmId
                   }
                 });
                  
